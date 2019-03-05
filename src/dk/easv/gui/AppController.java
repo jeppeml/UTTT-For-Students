@@ -179,8 +179,19 @@ public class AppController implements Initializable {
         
         @Override
         public void run() {
-            IBot bot1 = comboBotsLeft.getSelectionModel().getSelectedItem();
-            IBot bot2 = comboBotsRight.getSelectionModel().getSelectedItem();
+            IBot bot1=comboBotsLeft.getSelectionModel().getSelectedItem();
+            IBot bot2=comboBotsRight.getSelectionModel().getSelectedItem();
+            try {
+                bot1 = comboBotsLeft.getSelectionModel().getSelectedItem().getClass().newInstance();
+                bot2 = comboBotsRight.getSelectionModel().getSelectedItem().getClass().newInstance();
+            }
+            catch (InstantiationException ex) {
+                Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            catch (IllegalAccessException ex) {
+                Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         
             for (int i = 0; i < amountOfSimulations/2; i++) {
                 BoardModel model = new BoardModel(bot1, bot2);

@@ -103,12 +103,12 @@ public class GameManager {
      * @param move The next user dk.easv.bll.move
      * @return Returns true if the update was successful, false otherwise.
      */
-    public Boolean UpdateGame(IMove move)
+    public Boolean updateGame(IMove move)
     {
-        if(!VerifyMoveLegality(move)) 
+        if(!verifyMoveLegality(move)) 
             return false;
         
-        UpdateBoard(move);
+        updateBoard(move);
         currentPlayer = (currentPlayer + 1) % 2;
         
         return true;
@@ -118,7 +118,7 @@ public class GameManager {
      * Non-User driven input, e.g. an update for playing a bot move.
      * @return Returns true if the update was successful, false otherwise.
      */
-    public Boolean UpdateGame()
+    public Boolean updateGame()
     {
         //Check game mode is set to one of the bot modes.
         assert(mode != GameMode.HumanVsHuman);
@@ -127,12 +127,12 @@ public class GameManager {
         if(mode == GameMode.HumanVsBot && currentPlayer == 1 && playerGoesFirst)
         {
              IMove botMove = bot.doMove(new GameState(currentState));
-             return UpdateGame(botMove);
+             return updateGame(botMove);
         }
         else if(mode == GameMode.HumanVsBot && !playerGoesFirst && currentPlayer == 0)
         {
             IMove botMove = bot.doMove(new GameState(currentState));
-            return UpdateGame(botMove);
+            return updateGame(botMove);
         }
         
         //Check bot is not equal to null, and throw an exception if it is.
@@ -147,14 +147,14 @@ public class GameManager {
 
             IMove botMove = currentPlayer == 0 ? bot.doMove(new GameState(currentState)) : bot2.doMove(new GameState(currentState));
 
-            return UpdateGame(botMove);
+            return updateGame(botMove);
         }
         return false;
     }
 
 
 
-    private Boolean VerifyMoveLegality(IMove move)
+    private Boolean verifyMoveLegality(IMove move)
     {
         IField field = currentState.getField();
         boolean isValid=field.isInActiveMicroboard(move.getX(), move.getY());
@@ -168,14 +168,14 @@ public class GameManager {
         return isValid;
     }
     
-    private void UpdateBoard(IMove move)
+    private void updateBoard(IMove move)
     {
         String[][] board = currentState.getField().getBoard();
         board[move.getX()][move.getY()]=currentPlayer+"";
         currentState.setMoveNumber(currentState.getMoveNumber() + 1);
         if(currentState.getMoveNumber() % 2 == 0) { currentState.setRoundNumber(currentState.getRoundNumber() + 1); }
         checkAndUpdateIfWin(move);
-        UpdateMacroboard(move);
+        updateMacroboard(move);
 
     }
 
@@ -263,7 +263,7 @@ public class GameManager {
         return false;
     }
     
-    private void UpdateMacroboard(IMove move)
+    private void updateMacroboard(IMove move)
     {
         String[][] macroBoard = currentState.getField().getMacroboard();
         for (int i = 0; i < macroBoard.length; i++)

@@ -50,14 +50,14 @@ public class BoardModel implements Observable{
     }
 
     public boolean doMove() {
-        boolean valid = game.UpdateGame();
+        boolean valid = game.updateGame();
         if(valid)
             notifyAllListeners();
         return valid;
     }
 
     public boolean doMove(IMove move){
-        boolean valid = game.UpdateGame(move);
+        boolean valid = game.updateGame(move);
         if(valid)
             notifyAllListeners();
         return valid;
