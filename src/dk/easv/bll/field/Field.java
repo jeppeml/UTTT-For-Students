@@ -77,29 +77,12 @@ public class Field implements IField{
 
     @Override
     public String[][] getBoard() {
-        return board;/*
-        String[][] clonedBoard = new String[board.length][board[0].length];
-        //NOTE: Cloning here, for security purposes
-        for (int i = 0; i < clonedBoard.length; i++) {
-            for (int j = 0; j < clonedBoard[i].length; j++) {
-                clonedBoard[i][j] = board[i][j];
-            }
-        }
-        
-        return clonedBoard;*/
+        return board;
     }
 
     @Override
     public String[][] getMacroboard() {
-        return macroBoard;/*
-        String[][] clonedBoard = new String[macroBoard.length][macroBoard[0].length];
-        //NOTE: Cloning here, for security purposes
-        for (int i = 0; i < macroBoard.length; i++) {
-            for (int j = 0; j < macroBoard[i].length; j++) {
-                clonedBoard[i][j] = macroBoard[i][j];
-            }
-        }
-        return clonedBoard;*/
+        return macroBoard;
     }
 
     @Override

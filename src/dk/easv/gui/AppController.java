@@ -151,7 +151,10 @@ public class AppController implements Initializable {
         winsBot2 = 0;
         ties = 0;
         for (int i = 0; i < multiCores; i++) {
-            Thread t = new Thread(new Simulator(amountOfSimulations/multiCores));
+            Thread t = new Thread(
+                    new Simulator(amountOfSimulations/multiCores, 
+                        this.comboBotsLeft.getValue().getClass(), 
+                        this.comboBotsRight.getValue().getClass()));
             t.setDaemon(true);
             t.start();
         }
@@ -173,17 +176,17 @@ public class AppController implements Initializable {
     
     private class Simulator implements Runnable{
         private final long amountOfSimulations;
-        public Simulator(long amountOfSimulations) {
+        private IBot bot1;
+        private IBot bot2;
+        public Simulator(
+                long amountOfSimulations, 
+                Class<? extends IBot> b1, 
+                Class<? extends IBot> b2) {
+
             this.amountOfSimulations=amountOfSimulations;
-        }
-        
-        @Override
-        public void run() {
-            IBot bot1=comboBotsLeft.getSelectionModel().getSelectedItem();
-            IBot bot2=comboBotsRight.getSelectionModel().getSelectedItem();
             try {
-                bot1 = comboBotsLeft.getSelectionModel().getSelectedItem().getClass().newInstance();
-                bot2 = comboBotsRight.getSelectionModel().getSelectedItem().getClass().newInstance();
+                this.bot1 = b1.newInstance();
+                this.bot2 = b2.newInstance();
             }
             catch (InstantiationException ex) {
                 Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
@@ -191,8 +194,10 @@ public class AppController implements Initializable {
             catch (IllegalAccessException ex) {
                 Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+        }
         
+        @Override
+        public void run() {
             for (int i = 0; i < amountOfSimulations/2; i++) {
                 BoardModel model = new BoardModel(bot1, bot2);
                 int currentPlayer = 0;
