@@ -1,5 +1,6 @@
-package dk.easv.bll.bot;
+package dk.easv.bll.bot.disabledbots;
 
+import dk.easv.bll.bot.IBot;
 import dk.easv.bll.field.IField;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;

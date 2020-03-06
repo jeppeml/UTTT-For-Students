@@ -1,13 +1,16 @@
-package dk.easv.bll.bot;
+package dk.easv.bll.bot.disabledbots;
 
+
+
+import dk.easv.bll.bot.IBot;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;
 
 import java.util.List;
 import java.util.Random;
 
-public class LordBagelMuncher implements IBot{
-    private static final String BOTNAME = "Lord Bagel Muncher";
+public class FungusFoot implements IBot{
+    private static final String BOTNAME = "Fungus foot";
 
     @Override
     public IMove doMove(IGameState state) {
