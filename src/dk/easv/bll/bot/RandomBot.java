@@ -1,4 +1,4 @@
-package dk.easv.bll.bot.disabledbots;
+package dk.easv.bll.bot;
 
 
 

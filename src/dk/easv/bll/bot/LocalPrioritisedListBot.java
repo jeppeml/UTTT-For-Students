@@ -1,4 +1,4 @@
-package dk.easv.bll.bot.disabledbots;
+package dk.easv.bll.bot;
 
 import dk.easv.bll.bot.IBot;
 import dk.easv.bll.field.IField;

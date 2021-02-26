@@ -1,4 +1,4 @@
-package dk.easv.bll.bot.disabledbots;
+package dk.easv.bll.bot;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -6,6 +6,8 @@ package dk.easv.bll.bot.disabledbots;
  * and open the template in the editor.
  */
 
+
+import dk.easv.bll.bot.LocalPrioritisedListBot;
 
 /**
  *
