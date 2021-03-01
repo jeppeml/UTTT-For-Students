@@ -1,7 +1,7 @@
 # UTTT-For-Students
 This is an implementation of the Ultimate Tic Tac Toe game. The game is written in Java using JavaFX, FontAwesoneFX by Jens Deters and JFoenix.
 
-![Screenshot of the game GUI](/UTTT game screenshot.png)
+![Screenshot of gameplay](/UTTT%20game%20screenshot.png)
 
 ## Game rules
 Here is a nice explanation of the rules of the game https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/
