@@ -1,10 +1,10 @@
 package dk.easv.bll.bot;
 
-import dk.easv.bll.bot.IBot;
 import dk.easv.bll.field.IField;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;
 import dk.easv.bll.move.Move;
+
 
 
 public class LocalPrioritisedListBot implements IBot {
@@ -26,7 +26,6 @@ public class LocalPrioritisedListBot implements IBot {
      */
     @Override
     public IMove doMove(IGameState state) {
-
         //Find macroboard to play in
         for (int[] move : preferredMoves)
         {
