@@ -23,6 +23,7 @@ public class DrunkenBot extends LocalPrioritisedListBot {
             {0, 1}, {2, 1}, {1, 0}, {1, 2}, //Outer Middles ordered across
             {1, 1}}; //Center
         super.preferredMoves = pref;
+
     }
 
     @Override
