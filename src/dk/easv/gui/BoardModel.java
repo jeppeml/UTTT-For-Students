@@ -15,6 +15,7 @@ public class BoardModel implements Observable{
     private static final int TIME_PER_MOVE = 1000; //Each bot is allowed 1000ms per move
     private final List<InvalidationListener> listeners = new ArrayList<>();
     private final GameManager game;
+    private boolean isForced=false;
     
     public BoardModel() {
         game = new GameManager(new GameState());
@@ -49,6 +50,13 @@ public class BoardModel implements Observable{
         return game.getCurrentState();
     }
 
+    // If bot is cheating/malfunctioning opponent wins
+   public void forceGameOver(int winner){
+        isForced=true;
+        game.setCurrentPlayer(winner);
+        game.setGameOver(GameManager.GameOverState.Win);
+   }
+
     public boolean doMove() {
         boolean valid = game.updateGame();
         if(valid)
@@ -79,4 +87,9 @@ public class BoardModel implements Observable{
     public GameManager.GameOverState getGameOverState() {
         return game.getGameOver();
     }
+
+    public boolean getIsForced() {
+        return isForced;
+    }
+
 }

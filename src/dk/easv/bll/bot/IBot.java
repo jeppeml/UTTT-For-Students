@@ -3,6 +3,9 @@ package dk.easv.bll.bot;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;
 
+import java.util.List;
+import java.util.Random;
+
 /**
  *
  * @author mjl
@@ -18,4 +21,5 @@ public interface IBot {
     IMove doMove(IGameState state);
 
     String getBotName();
+
 }

@@ -7,8 +7,6 @@ package dk.easv.bll.bot;
  */
 
 
-import dk.easv.bll.bot.LocalPrioritisedListBot;
-
 /**
  *
  * @author jeppjleemoritzled
