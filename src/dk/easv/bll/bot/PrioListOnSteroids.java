@@ -20,12 +20,9 @@ public class PrioListOnSteroids extends LocalPrioritisedListBot{
     }
 
 
-    // Simplified version of checking if win. This checks only relevant to the concrete move
-    // However cloning the array takes up some resources
-    // Check the GameManager class to see another similar solution
+    // Simplified version of checking if win. Check the GameManager class to see another similar solution
     private boolean isWinningMove(IGameState state, IMove move, String player){
         // Clones the array and all values to a new array, so we don't mess with the game
-        // We cannot do Arrays.copyOf or simply board.clone(), as it will point to the same strings
         String[][] board = Arrays.stream(state.getField().getBoard()).map(String[]::clone).toArray(String[][]::new);
 
         //Places the player in the game. Sort of a simulation.
