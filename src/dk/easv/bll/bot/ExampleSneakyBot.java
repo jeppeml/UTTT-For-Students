@@ -1,6 +1,7 @@
 package dk.easv.bll.bot;
 
 import dk.easv.bll.field.IField;
+import dk.easv.bll.game.GameState;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;
 import java.util.List;
@@ -11,9 +12,8 @@ public class ExampleSneakyBot implements IBot{
     final int moveTimeMs = 1000;
     private String BOT_NAME = getClass().getSimpleName();
 
-    private GameSimulator createSimulator(IGameState state)
-    {
-        GameSimulator simulator = new GameSimulator(state);
+    private GameSimulator createSimulator(IGameState state) {
+        GameSimulator simulator = new GameSimulator(new GameState());
         simulator.setGameOver(GameOverState.Active);
         simulator.setCurrentPlayer(state.getMoveNumber() % 2);
         simulator.getCurrentState().setRoundNumber(state.getRoundNumber());
