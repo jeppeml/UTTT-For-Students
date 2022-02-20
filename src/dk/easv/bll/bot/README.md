@@ -1,4 +1,4 @@
-#Bots should go here
+# Bots should go here
 There are some examples on how to create simple bots:
  - RandomBot.java
    This bot gets a list of valid moves and plays totally random. Good for testing against.
