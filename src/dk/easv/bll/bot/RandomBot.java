@@ -1,6 +1,4 @@
-package dk.easv.bll.bot.disabledbots;
-
-
+package dk.easv.bll.bot;
 
 import dk.easv.bll.bot.IBot;
 import dk.easv.bll.game.IGameState;
@@ -23,13 +21,13 @@ public class RandomBot implements IBot {
     @Override
     public IMove doMove(IGameState state) {
         List<IMove> moves = state.getField().getAvailableMoves();
-
         if (moves.size() > 0) {
             return moves.get(rand.nextInt(moves.size())); /* get random move from available moves */
         }
 
         return null;
     }
+
     @Override
     public String getBotName() {
         return BOTNAME;

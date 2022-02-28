@@ -67,7 +67,8 @@ public class UTTTGameController implements Initializable {
         }
         // AIvsHuman
         else if (bot0 != null && player1 != null) {
-            doBotMove();
+            // FIX HERE, KEEPS ASKING FOR VALID MOVE IF BOT PLAYS INVALID good for player bot not bot
+            boolean isValid = doBotMove();
         }
         // AIvsAI
         else if (bot0 != null && bot1 != null) {
@@ -75,7 +76,8 @@ public class UTTTGameController implements Initializable {
             Thread t = new Thread(() -> {
                 while (model.getGameOverState() == GameManager.GameOverState.Active
                         && model.getGameState().getField().getAvailableMoves().size()>0) {
-                    doBotMove();
+                    // FIX HERE, KEEPS ASKING FOR VALID MOVE IF BOT PLAYS INVALID
+                    boolean isValid = doBotMove();
                     try {
                         Thread.sleep(botDelay);
                     }
@@ -90,17 +92,28 @@ public class UTTTGameController implements Initializable {
         }
     }
 
-    private void doBotMove() {
+    private boolean doBotMove() {
         int currentPlayer = model.getCurrentPlayer();
         Boolean valid = model.doMove();
-        checkAndLockIfGameEnd(currentPlayer);
+        if(!valid) {
+            int opponent = 0;
+            if(model.getCurrentPlayer()==0)
+                opponent = 1;
+            model.forceGameOver(opponent);
+            showWinnerPane(""+opponent);
+
+        }
+        else
+            checkAndLockIfGameEnd(currentPlayer);
+        return valid;
     }
 
-    private boolean doMove(IMove move) {
+    private boolean doMove(IMove move) throws Exception {
         int currentPlayer = model.getCurrentPlayer();
         boolean validMove = model.doMove(move);
+        if(!validMove) return false;
         checkAndLockIfGameEnd(currentPlayer);
-        return validMove;
+        return true;
     }
 
     private String getNameFromId(int winnerId) {
@@ -123,6 +136,7 @@ public class UTTTGameController implements Initializable {
         throw new RuntimeException("Player id not found " + winnerId);
     }
 
+
     private void showWinnerPane(String winner) {
         String winMsg;
         GameResult.Winner winStatus = GameResult.Winner.tie;
@@ -132,6 +146,8 @@ public class UTTTGameController implements Initializable {
         else {
             int winnerId = Integer.parseInt(winner);
             winMsg = getNameFromId(winnerId) + " wins";
+            if(model.getIsForced())
+                winMsg += " (opponent false move)";
             winStatus = winnerId == 0
                     ? GameResult.Winner.player0
                     : GameResult.Winner.player1;
@@ -232,7 +248,11 @@ public class UTTTGameController implements Initializable {
                         btn.setFocusTraversable(false);
                         btn.setOnMouseClicked(
                                 event -> {
-                                    doMove((IMove) btn.getUserData()); // Player move
+                                    try {
+                                        doMove((IMove) btn.getUserData()); // Player move
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
 
                                     boolean isHumanVsBot = player0 != null ^ player1 != null;
                                     if (model.getGameOverState() == GameManager.GameOverState.Active && isHumanVsBot) {
