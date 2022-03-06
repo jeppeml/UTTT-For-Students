@@ -19,4 +19,4 @@ The bots provided with the game are very simple and you can probably beat them r
 The game can also simulate games. This way if you choose bot vs bot, you can simulate many games as fast as you processor allows it and this way you can check if your AI/bot is better than other bots.
 
 ## YouTube on setup in IntelliJ
-https://youtu.be/woatADu6xJY
+https://www.youtube.com/watch?v=WU1eJXllIgU
