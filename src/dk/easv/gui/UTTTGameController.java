@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.Stage;
+
 
 public class UTTTGameController implements Initializable {
 
@@ -42,7 +42,6 @@ public class UTTTGameController implements Initializable {
     IBot bot1 = null;
     String player0 = null;
     String player1 = null;
-    private boolean simulation;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,7 +67,7 @@ public class UTTTGameController implements Initializable {
         // AIvsHuman
         else if (bot0 != null && player1 != null) {
             // FIX HERE, KEEPS ASKING FOR VALID MOVE IF BOT PLAYS INVALID good for player bot not bot
-            boolean isValid = doBotMove();
+            doBotMove();
         }
         // AIvsAI
         else if (bot0 != null && bot1 != null) {

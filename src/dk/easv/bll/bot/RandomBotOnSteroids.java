@@ -1,22 +1,30 @@
 package dk.easv.bll.bot;
 
+import dk.easv.bll.bot.IBot;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
-public class PrioListOnSteroids extends LocalPrioritisedListBot {
-    private static final String BOTNAME = "PrioList on Steroids";
+public class RandomBotOnSteroids implements IBot {
+    private static final String BOTNAME = "Random on Steroids";
+    Random rand = new Random();
 
     @Override
     public IMove doMove(IGameState state) {
-    List<IMove> winMoves = getWinningMoves(state);
+        List<IMove> winMoves = getWinningMoves(state);
         if(!winMoves.isEmpty())
-                return winMoves.get(0);
+            return winMoves.get(0);
+        List<IMove> moves = state.getField().getAvailableMoves();
+        if (moves.size() > 0) {
+            return moves.get(rand.nextInt(moves.size())); /* get random move from available moves */
+        }
 
-        return super.doMove(state);
+        return null;
+
     }
 
 
@@ -31,25 +39,25 @@ public class PrioListOnSteroids extends LocalPrioritisedListBot {
         int startX = move.getX()-(move.getX()%3);
         if(board[startX][move.getY()]==player)
             if (board[startX][move.getY()] == board[startX+1][move.getY()] &&
-                board[startX+1][move.getY()] == board[startX+2][move.getY()])
-                    return true;
+                    board[startX+1][move.getY()] == board[startX+2][move.getY()])
+                return true;
 
         int startY = move.getY()-(move.getY()%3);
         if(board[move.getX()][startY]==player)
             if (board[move.getX()][startY] == board[move.getX()][startY+1] &&
-                board[move.getX()][startY+1] == board[move.getX()][startY+2])
-                    return true;
+                    board[move.getX()][startY+1] == board[move.getX()][startY+2])
+                return true;
 
 
         if(board[startX][startY]==player)
             if (board[startX][startY] == board[startX+1][startY+1] &&
                     board[startX+1][startY+1] == board[startX+2][startY+2])
-                        return true;
+                return true;
 
         if(board[startX][startY+2]==player)
             if (board[startX][startY+2] == board[startX+1][startY+1] &&
                     board[startX+1][startY+1] == board[startX+2][startY])
-                        return true;
+                return true;
 
         return false;
     }

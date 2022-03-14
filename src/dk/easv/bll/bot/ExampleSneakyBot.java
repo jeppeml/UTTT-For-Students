@@ -1,5 +1,6 @@
 package dk.easv.bll.bot;
 
+import dk.easv.bll.bot.IBot;
 import dk.easv.bll.field.IField;
 import dk.easv.bll.game.GameState;
 import dk.easv.bll.game.IGameState;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class ExampleSneakyBot implements IBot{
+public class ExampleSneakyBot implements IBot {
     final int moveTimeMs = 1000;
     private String BOT_NAME = getClass().getSimpleName();
 

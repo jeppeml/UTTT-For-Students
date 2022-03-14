@@ -48,7 +48,7 @@ public class DynamicBotClassHandler {
                 }
             }
         }
-        
+        System.out.println("bot names here: " + file.toURI());
         Files.write(
             Paths.get(file.toURI()), bots, 
                 StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
