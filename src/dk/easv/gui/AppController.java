@@ -150,9 +150,13 @@ public class AppController implements Initializable {
         winsBot0 = 0;
         winsBot1 = 0;
         ties = 0;
+        long simulationsPerCore = amountOfSimulations / multiCores;
+        long remainingSimulations = amountOfSimulations % multiCores;
+
         for (int i = 0; i < multiCores; i++) {
+            long simulationsToRun = simulationsPerCore + (i < remainingSimulations ? 1 : 0);
             Thread t = new Thread(
-                    new Simulator(amountOfSimulations/multiCores, 
+                    new Simulator(simulationsToRun,
                         this.comboBotsLeft.getValue().getClass(), 
                         this.comboBotsRight.getValue().getClass()));
             t.setDaemon(true);
