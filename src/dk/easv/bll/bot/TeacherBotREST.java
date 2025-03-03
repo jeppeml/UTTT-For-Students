@@ -23,7 +23,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 public class TeacherBotREST implements IBot{
     private static final String BOT_NAME = "Teacher Bot (online)";
     // This bot requires a VPN connection to the EASV network
-    private static final String SERVER_URI = "http://10.176.88.51:4567/doMove";
+    private static final String SERVER_URI = "http://10.176.88.89:4567/doMove";
     @Override
     public IMove doMove(IGameState state) {
         Gson gson = new Gson();
