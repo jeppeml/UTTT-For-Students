@@ -64,8 +64,8 @@ public class AppController implements Initializable {
     @FXML
     private AnchorPane anchorMain;
     private BooleanProperty simulation= new SimpleBooleanProperty(false);
-    private volatile int winsBot0 = 0;
     private volatile int winsBot1 = 0;
+    private volatile int winsBot2 = 0;
     private volatile int ties = 0;
     @FXML
     private JFXToggleButton toggleBtnSim;
@@ -147,8 +147,8 @@ public class AppController implements Initializable {
 
     private void startSimulation(long amountOfSimulations) {
         int multiCores = Runtime.getRuntime().availableProcessors();
-        winsBot0 = 0;
         winsBot1 = 0;
+        winsBot2 = 0;
         ties = 0;
         long simulationsPerCore = amountOfSimulations / multiCores;
         long remainingSimulations = amountOfSimulations % multiCores;
@@ -212,14 +212,14 @@ public class AppController implements Initializable {
                 } else {
                     GameResult.Winner winResult = currentPlayer == 0 ? GameResult.Winner.player0 : GameResult.Winner.player1;
                     if (currentPlayer == 0) {
-                        winsBot0++;
-                    } else {
                         winsBot1++;
+                    } else {
+                        winsBot2++;
                     }
                     this.addGameResult(new GameResult(bot0.getBotName(), bot1.getBotName(), winResult));
                 }
             }
-            setSimulationResults(bot0.getBotName() + " vs " + bot1.getBotName() + " | w/w/t " + winsBot0 + "/" + winsBot1 + "/" + ties);
+            setSimulationResults(bot0.getBotName() + " vs " + bot1.getBotName() + " | w/w/t " + winsBot1 + "/" + winsBot2 + "/" + ties);
         }
 
         private void setSimulationResults(String result) {
