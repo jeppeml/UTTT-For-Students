@@ -180,14 +180,14 @@ public class AppController implements Initializable {
 
     private class Simulator implements Runnable {
         private final long amountOfSimulations;
-        private IBot bot0;
         private IBot bot1;
+        private IBot bot2;
 
-        public Simulator(long amountOfSimulations, Class<? extends IBot> b0, Class<? extends IBot> b1) {
+        public Simulator(long amountOfSimulations, Class<? extends IBot> b1, Class<? extends IBot> b2) {
             this.amountOfSimulations = amountOfSimulations;
             try {
-                this.bot0 = b0.newInstance();
                 this.bot1 = b1.newInstance();
+                this.bot2 = b2.newInstance();
             } catch (InstantiationException | IllegalAccessException ex) {
                 Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -196,7 +196,7 @@ public class AppController implements Initializable {
         @Override
         public void run() {
             for (int i = 0; i < amountOfSimulations; i++) {
-                BoardModel model = new BoardModel(bot0, bot1);
+                BoardModel model = new BoardModel(bot1, bot2);
                 int currentPlayer = 0;
                 while (model.getGameOverState() == GameManager.GameOverState.Active
                         && model.getGameState().getField().getAvailableMoves().size() > 0) {
@@ -207,7 +207,7 @@ public class AppController implements Initializable {
                     }
                 }
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
-                    this.addGameResult(new GameResult(bot0.getBotName(), bot1.getBotName(), GameResult.Winner.tie));
+                    this.addGameResult(new GameResult(bot1.getBotName(), bot2.getBotName(), GameResult.Winner.tie));
                     ties++;
                 } else {
                     GameResult.Winner winResult = currentPlayer == 0 ? GameResult.Winner.player0 : GameResult.Winner.player1;
@@ -216,10 +216,10 @@ public class AppController implements Initializable {
                     } else {
                         winsBot2++;
                     }
-                    this.addGameResult(new GameResult(bot0.getBotName(), bot1.getBotName(), winResult));
+                    this.addGameResult(new GameResult(bot1.getBotName(), bot2.getBotName(), winResult));
                 }
             }
-            setSimulationResults(bot0.getBotName() + " vs " + bot1.getBotName() + " | w/w/t " + winsBot1 + "/" + winsBot2 + "/" + ties);
+            setSimulationResults(bot1.getBotName() + " vs " + bot2.getBotName() + " | w/w/t " + winsBot1 + "/" + winsBot2 + "/" + ties);
         }
 
         private void setSimulationResults(String result) {
