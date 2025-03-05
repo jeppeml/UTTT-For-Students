@@ -3,6 +3,17 @@ This is an implementation of the Ultimate Tic Tac Toe game. The game is written 
 
 ![Screenshot of gameplay](/UTTT%20game%20screenshot.png)
 
+## Getting it to work in IntelliJ
+You have to setup your VM options
+
+This is because of the jfoenix framework.
+
+Edit your run configuration->Modify Options->Add VM Options
+
+Add this line
+
+```--add-opens java.base/java.lang.reflect=ALL-UNNAMED```
+
 ## Game rules
 Here is a nice explanation of the rules of the game https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/
 

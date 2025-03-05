@@ -35,16 +35,19 @@
     </dependencies>
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin (Ensures Java 23, Forces Classpath Mode) -->
+            <!-- Maven Compiler Plugin (Ensures Java 23) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
                     <release>23</release>
+                    <compilerArgs>
+                        <arg>--add-opens</arg>
+                        <arg>java.base/java.lang.reflect=ALL-UNNAMED</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
-
             <!-- Maven Shade Plugin (Creates a Fat JAR, Includes Dependencies) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -67,20 +70,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Exec Maven Plugin (For Running in Classpath Mode) -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.5.0</version>
-                <configuration>
-                    <executable>java</executable>
-                    <arguments>
-                        <argument>-cp</argument>
-                        <classpath/>
-                        <argument>dk.easv.Main</argument>
-                    </arguments>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
