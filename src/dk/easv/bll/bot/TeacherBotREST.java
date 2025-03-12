@@ -1,6 +1,7 @@
 package dk.easv.bll.bot;
 
 import com.google.gson.Gson;
+import dk.easv.bll.bot.IBot;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;
 import dk.easv.bll.move.Move;
@@ -20,7 +21,7 @@ import java.net.http.HttpResponse.BodyHandlers;
  * This client implementation requires the Google GSon library.
  *
  */
-public class TeacherBotREST implements IBot{
+public class TeacherBotREST implements IBot {
     private static final String BOT_NAME = "Teacher Bot (online)";
     // This bot requires a VPN connection to the EASV network
     private static final String SERVER_URI = "http://10.176.88.89:4567/doMove";

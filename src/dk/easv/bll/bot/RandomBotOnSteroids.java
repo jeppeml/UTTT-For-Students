@@ -1,5 +1,6 @@
 package dk.easv.bll.bot;
 
+import dk.easv.bll.bot.IBot;
 import dk.easv.bll.game.IGameState;
 import dk.easv.bll.move.IMove;
 
