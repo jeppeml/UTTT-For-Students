@@ -8,19 +8,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PrioListOnSteroids extends LocalPrioritisedListBot {
-    private static final String BOTNAME = "PrioList on Steroids";
+    private static final String BOT_NAME = "PrioList on Steroids";
 
     @Override
     public IMove doMove(IGameState state) {
     List<IMove> winMoves = getWinningMoves(state);
         if(!winMoves.isEmpty())
-                return winMoves.get(0);
+                return winMoves.getFirst();
 
         return super.doMove(state);
     }
 
 
-    // Simplified version of checking if win. Check the GameManager class to see another similar solution
+    // Simplified version of checking if there is a win. Check the GameManager class to see another similar solution
     private boolean isWinningMove(IGameState state, IMove move, String player){
         // Clones the array and all values to a new array, so we don't mess with the game
         String[][] board = Arrays.stream(state.getField().getBoard()).map(String[]::clone).toArray(String[][]::new);
@@ -29,27 +29,26 @@ public class PrioListOnSteroids extends LocalPrioritisedListBot {
         board[move.getX()][move.getY()] = player;
 
         int startX = move.getX()-(move.getX()%3);
-        if(board[startX][move.getY()]==player)
-            if (board[startX][move.getY()] == board[startX+1][move.getY()] &&
-                board[startX+1][move.getY()] == board[startX+2][move.getY()])
+        if(board[startX][move.getY()].equals(player))
+            if (board[startX][move.getY()].equals(board[startX + 1][move.getY()]) &&
+                    board[startX + 1][move.getY()].equals(board[startX + 2][move.getY()]))
                     return true;
 
         int startY = move.getY()-(move.getY()%3);
-        if(board[move.getX()][startY]==player)
-            if (board[move.getX()][startY] == board[move.getX()][startY+1] &&
-                board[move.getX()][startY+1] == board[move.getX()][startY+2])
+        if(board[move.getX()][startY].equals(player))
+            if (board[move.getX()][startY].equals(board[move.getX()][startY + 1]) &&
+                    board[move.getX()][startY + 1].equals(board[move.getX()][startY + 2]))
                     return true;
 
 
-        if(board[startX][startY]==player)
-            if (board[startX][startY] == board[startX+1][startY+1] &&
-                    board[startX+1][startY+1] == board[startX+2][startY+2])
+        if(board[startX][startY].equals(player))
+            if (board[startX][startY].equals(board[startX + 1][startY + 1]) &&
+                    board[startX + 1][startY + 1].equals(board[startX + 2][startY + 2]))
                         return true;
 
-        if(board[startX][startY+2]==player)
-            if (board[startX][startY+2] == board[startX+1][startY+1] &&
-                    board[startX+1][startY+1] == board[startX+2][startY])
-                        return true;
+        if(board[startX][startY + 2].equals(player))
+            return board[startX][startY + 2].equals(board[startX + 1][startY + 1]) &&
+                    board[startX + 1][startY + 1].equals(board[startX + 2][startY]);
 
         return false;
     }
@@ -71,6 +70,6 @@ public class PrioListOnSteroids extends LocalPrioritisedListBot {
 
     @Override
     public String getBotName() {
-        return BOTNAME;
+        return BOT_NAME;
     }
 }

@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/dk/easv/gui/App.fxml"));
         primaryStage.setTitle("Ultimate Tic Tac Toe - Diamonds and Trash");
         primaryStage.setScene(new Scene(root, 900, 700));
