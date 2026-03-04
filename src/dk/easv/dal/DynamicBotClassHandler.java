@@ -29,32 +29,33 @@ public class DynamicBotClassHandler {
         return fileName;
     }
     
-    public static void writeBotsToTextFile() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException {
+    public static void writeBotsToTextFile() throws Exception {
         File file = new File("bots.txt");
         List<String> bots = new ArrayList<>();
 
         Path dir = FileSystems.getDefault().getPath("./src/dk/easv/bll/bot");
-        try (DirectoryStream<Path> stream = 
+        try (DirectoryStream<Path> stream =
                 Files.newDirectoryStream(dir, "*.java")) {
             for (Path path : stream){
                 String className = getFilenameNoExtension(path);
                 String classPathAndName = "dk.easv.bll.bot." + className;
                 URL[] urls = {path.toFile().toURI().toURL()};
-                ClassLoader cl = new URLClassLoader(urls);
-                Class clazz = cl.loadClass(classPathAndName);
-                if (!clazz.isInterface()) {
-                    IBot bot = (IBot) clazz.newInstance();
-                    bots.add(bot.getBotName());
+                try (URLClassLoader cl = new URLClassLoader(urls)) {
+                    Class clazz = cl.loadClass(classPathAndName);
+                    if (!clazz.isInterface()) {
+                        IBot bot = (IBot) clazz.getDeclaredConstructor().newInstance();
+                        bots.add(bot.getBotName());
+                    }
                 }
             }
         }
         System.out.println("bot names here: " + file.toURI());
         Files.write(
-            Paths.get(file.toURI()), bots, 
+            Paths.get(file.toURI()), bots,
                 StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
     }
-    
-    public static ObservableList<IBot> loadBotList() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
+
+    public static ObservableList<IBot> loadBotList() throws Exception
     {
         ObservableList<IBot> bots = FXCollections.observableArrayList();
 
@@ -63,11 +64,12 @@ public class DynamicBotClassHandler {
             for (Path path : stream) {
                 String classPathAndName = "dk.easv.bll.bot." + getFilenameNoExtension(path);
                 URL[] urls = {path.toFile().toURI().toURL()};
-                ClassLoader cl = new URLClassLoader(urls);
-                Class clazz = cl.loadClass(classPathAndName);
-                if (!clazz.isInterface()) {
-                    IBot bot = (IBot) clazz.newInstance();
-                    bots.add(bot);
+                try (URLClassLoader cl = new URLClassLoader(urls)) {
+                    Class clazz = cl.loadClass(classPathAndName);
+                    if (!clazz.isInterface()) {
+                        IBot bot = (IBot) clazz.getDeclaredConstructor().newInstance();
+                        bots.add(bot);
+                    }
                 }
             }
         }

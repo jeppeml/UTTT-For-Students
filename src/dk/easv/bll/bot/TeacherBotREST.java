@@ -24,9 +24,11 @@ public class TeacherBotREST implements IBot {
     private static final String BOT_NAME = "Teacher Bot (online)";
     // This bot requires a VPN connection to the EASV network
     private static final String SERVER_URI = "http://10.176.88.89:4567/doMove";
+    private final Gson gson = new Gson();
+    private final HttpClient httpClient = HttpClient.newHttpClient();
+
     @Override
     public IMove doMove(IGameState state) {
-        Gson gson = new Gson();
         String jsonState = gson.toJson(state);
 
         HttpRequest request =
@@ -36,27 +38,19 @@ public class TeacherBotREST implements IBot {
                 .PUT(HttpRequest.BodyPublishers.ofString(jsonState))
                 .build();
 
-        var client = HttpClient.newHttpClient();
-        HttpResponse<String> response = null;
         try {
-            response = client.send(request, BodyHandlers.ofString());
-
-        // This is not the most graceful exception handling, but we want the bot to die
-        // if the connection fails. Normally we could retry, however that would violate
-        // the max allowed time for the bot to think.
-        } catch (IOException e) {
-            throw new RuntimeException("Connection problems with "+ BOT_NAME,e);
-
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Connection problems with "+ BOT_NAME,e);
+            HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+            return gson.fromJson(response.body(), Move.class);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("Connection problems with " + BOT_NAME, e);
         }
-
-        Move move = gson.fromJson(response.body(), Move.class);
-        return move;
     }
 
     @Override
     public String getBotName() {
         return BOT_NAME;
     }
+
+    @Override
+    public boolean isNetworkBot() { return true; }
 }

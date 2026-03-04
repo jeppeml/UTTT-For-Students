@@ -1,6 +1,6 @@
 package dk.easv.gui;
 
-import com.jfoenix.controls.*;
+import javafx.scene.control.*;
 import dk.easv.bll.bot.IBot;
 import dk.easv.bll.game.GameManager;
 import dk.easv.bll.game.stats.GameResult;
@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -32,45 +33,45 @@ import javafx.scene.layout.AnchorPane;
 
 public class AppController implements Initializable {
 
-    public JFXButton btnTrash;
-    public JFXButton btnDiamond;
+    public Button btnTrash;
+    public Button btnDiamond;
     @FXML
-    private JFXTextField txtHumanNameLeft;
+    private TextField txtHumanNameLeft;
     @FXML
-    private JFXRadioButton radioRightAI;
+    private RadioButton radioRightAI;
     @FXML
-    private JFXTextField txtHumanNameRight;
+    private TextField txtHumanNameRight;
     @FXML
-    private JFXRadioButton radioLeftAI;
+    private RadioButton radioLeftAI;
     @FXML
-    private JFXRadioButton radioRightHuman;
+    private RadioButton radioRightHuman;
     @FXML
     private ToggleGroup toggleLeft;
     @FXML
     private ToggleGroup toggleRight;
 
     @FXML
-    private JFXButton btnStart;
+    private Button btnStart;
     @FXML
-    private JFXComboBox<IBot> comboBotsRight;
+    private ComboBox<IBot> comboBotsRight;
     @FXML
-    private JFXComboBox<IBot> comboBotsLeft;
+    private ComboBox<IBot> comboBotsLeft;
     @FXML
-    private JFXRadioButton radioLeftHuman;
+    private RadioButton radioLeftHuman;
     @FXML
-    private JFXSlider sliderSpeed;
+    private Slider sliderSpeed;
 
     StatsModel statsModel = new StatsModel();
     @FXML
     private AnchorPane anchorMain;
     private BooleanProperty simulation= new SimpleBooleanProperty(false);
-    private volatile int winsBot1 = 0;
-    private volatile int winsBot2 = 0;
-    private volatile int ties = 0;
+    private final AtomicInteger winsBot1 = new AtomicInteger(0);
+    private final AtomicInteger winsBot2 = new AtomicInteger(0);
+    private final AtomicInteger ties = new AtomicInteger(0);
     @FXML
-    private JFXToggleButton toggleBtnSim;
+    private ToggleButton toggleBtnSim;
     @FXML
-    private JFXSlider sliderSim;
+    private Slider sliderSim;
     
     private Stage statsWindow  = null;
 
@@ -82,7 +83,7 @@ public class AppController implements Initializable {
             DynamicBotClassHandler.writeBotsToTextFile();
             bots = loadBotList();
         }
-        catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        catch (Exception ex) {
             Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -92,7 +93,6 @@ public class AppController implements Initializable {
         comboBotsRight.setButtonCell(new CustomIBotListCell());
         comboBotsRight.setCellFactory(p -> new CustomIBotListCell());
         comboBotsRight.setItems(bots);
-        btnStart.setDisableVisualFocus(true);
         btnDiamond.setGraphic(getFontAwesomeIconFromPlayerId("1"));
         btnTrash.setGraphic(getFontAwesomeIconFromPlayerId("0"));
 
@@ -147,9 +147,9 @@ public class AppController implements Initializable {
 
     private void startSimulation(long amountOfSimulations) {
         int multiCores = Runtime.getRuntime().availableProcessors();
-        winsBot1 = 0;
-        winsBot2 = 0;
-        ties = 0;
+        winsBot1.set(0);
+        winsBot2.set(0);
+        ties.set(0);
         for (int i = 0; i < multiCores; i++) {
             Thread t = new Thread(
                     new Simulator(amountOfSimulations/multiCores, 
@@ -185,14 +185,11 @@ public class AppController implements Initializable {
 
             this.amountOfSimulations=amountOfSimulations;
             try {
-                this.bot1 = b1.newInstance();
-                this.bot2 = b2.newInstance();
+                this.bot1 = b1.getDeclaredConstructor().newInstance();
+                this.bot2 = b2.getDeclaredConstructor().newInstance();
             }
-            catch (InstantiationException ex) {
-                Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            catch (IllegalAccessException ex) {
-                Logger.getLogger(AppController.class.getName()).log(Level.SEVERE, null, ex);
+            catch (Exception ex) {
+                throw new RuntimeException("Failed to instantiate bots for simulation", ex);
             }
         }
         
@@ -206,36 +203,40 @@ public class AppController implements Initializable {
                     currentPlayer = model.getCurrentPlayer();
                     Boolean valid = model.doMove();
                     if (!valid) {
-                        throw new RuntimeException("Bot not following rules!");
+                        // Bot forfeits: opponent wins
+                        int opponent = (model.getCurrentPlayer() + 1) % 2;
+                        model.forceGameOver(opponent);
+                        currentPlayer = opponent;
+                        break;
                     }
                 }
                 // There is a tie
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
                     this.addGameResult(
                             new GameResult(
-                                    bot1.getBotName(), 
-                                    bot2.getBotName(), 
+                                    bot1.getBotName(),
+                                    bot2.getBotName(),
                                     GameResult.Winner.tie));
-                    ties++;
+                    ties.incrementAndGet();
                 }
                 else { // There is a winner
-                    GameResult.Winner winResult=null;
+                    GameResult.Winner winResult;
                     if(currentPlayer==0) {
-                        winsBot1++;
+                        winsBot1.incrementAndGet();
                         winResult = GameResult.Winner.player0;
                     }
-                    else if(currentPlayer==1){
-                        winsBot2++;
+                    else {
+                        winsBot2.incrementAndGet();
                         winResult = GameResult.Winner.player1;
                     }
-                        
+
                     this.addGameResult(
                             new GameResult(
-                                    bot1.getBotName(), 
-                                    bot2.getBotName(), 
+                                    bot1.getBotName(),
+                                    bot2.getBotName(),
                                     winResult));
                 }
-                
+
             }
             for (int i = 0; i < amountOfSimulations/2; i++) {
                 BoardModel model = new BoardModel(bot2, bot1);
@@ -245,41 +246,44 @@ public class AppController implements Initializable {
                     currentPlayer = model.getCurrentPlayer();
                     Boolean valid = model.doMove();
                     if (!valid) {
-                        throw new RuntimeException("Bot not following rules!");
+                        int opponent = (model.getCurrentPlayer() + 1) % 2;
+                        model.forceGameOver(opponent);
+                        currentPlayer = opponent;
+                        break;
                     }
                 }
                 // There is a tie
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
                     this.addGameResult(
                             new GameResult(
-                                    bot2.getBotName(), 
-                                    bot1.getBotName(), 
+                                    bot2.getBotName(),
+                                    bot1.getBotName(),
                                     GameResult.Winner.tie));
-                    ties++;
+                    ties.incrementAndGet();
                 }
                 else { // There is a winner
-                    GameResult.Winner winResult=null;
+                    GameResult.Winner winResult;
                     if(currentPlayer==0) {
-                        winsBot2++;
+                        winsBot2.incrementAndGet();
                         winResult = GameResult.Winner.player0;
                     }
-                    else if(currentPlayer==1){
-                        winsBot1++;
+                    else {
+                        winsBot1.incrementAndGet();
                         winResult = GameResult.Winner.player1;
                     }
-                        
+
                     this.addGameResult(
                             new GameResult(
-                                    bot2.getBotName(), 
-                                    bot1.getBotName(), 
+                                    bot2.getBotName(),
+                                    bot1.getBotName(),
                                     winResult));
                 }
-                
+
             }
             setSimulationResults(bot1.getBotName() + " vs " +
                         bot2.getBotName() + " | " +
-                        "w/w/t " + winsBot1 + "/" +
-                        winsBot2 + "/" + ties);
+                        "w/w/t " + winsBot1.get() + "/" +
+                        winsBot2.get() + "/" + ties.get());
         }
         private void setSimulationResults(String result) {
             Platform.runLater(()-> 

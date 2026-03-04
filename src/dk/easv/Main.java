@@ -1,5 +1,6 @@
 package dk.easv;
 
+import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet());
         Parent root = FXMLLoader.load(getClass().getResource("/dk/easv/gui/App.fxml"));
         primaryStage.setTitle("Ultimate Tic Tac Toe - Diamonds and Trash");
         primaryStage.setScene(new Scene(root, 900, 700));

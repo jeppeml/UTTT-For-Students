@@ -5,7 +5,7 @@
  */
 package dk.easv.gui;
 
-import com.jfoenix.controls.JFXListView;
+import javafx.scene.control.ListView;
 import dk.easv.bll.game.stats.GameResult;
 import dk.easv.bll.game.stats.GameResult.Winner;
 import dk.easv.gui.util.FontAwesomeHelper;
@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 public class StatsController implements Initializable {
 
     @FXML
-    private JFXListView<GameResult> listResults;
+    private ListView<GameResult> listResults;
 
     private StatsModel statsModel;
     

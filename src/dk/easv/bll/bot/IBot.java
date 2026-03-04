@@ -22,4 +22,11 @@ public interface IBot {
 
     String getBotName();
 
+    /**
+     * Override and return true for bots that communicate over the network (e.g. REST clients).
+     * Network bots are exempt from the per-move time limit because latency is outside
+     * their control. A warning is printed to stderr if a network bot responds slowly.
+     */
+    default boolean isNetworkBot() { return false; }
+
 }

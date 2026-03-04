@@ -5,6 +5,8 @@ import dk.easv.bll.field.IField;
 import dk.easv.bll.move.IMove;
 import dk.easv.bll.move.Move;
 
+import java.util.concurrent.*;
+
 /**
  * This is a proposed GameManager for Ultimate Tic-Tac-Toe,
  * the implementation of which is up to whoever uses this interface.
@@ -32,18 +34,30 @@ public class GameManager {
         Tie
     }
     
+    private static final long NETWORK_BOT_TIMEOUT_MS = 30_000;
+    private static final ExecutorService moveExecutor = Executors.newCachedThreadPool(r -> {
+        Thread t = new Thread(r, "bot-move");
+        t.setDaemon(true);
+        return t;
+    });
+
     private final IGameState currentState;
     private int currentPlayer = 0; //player0 == 0 && player1 == 1
     private GameMode mode = GameMode.HumanVsHuman;
     private IBot bot = null;
     private IBot bot2 = null;
-    private volatile GameOverState gameOver = GameOverState.Active;
+    private final java.util.concurrent.atomic.AtomicReference<GameOverState> gameOver =
+            new java.util.concurrent.atomic.AtomicReference<>(GameOverState.Active);
+    private String forfeitReason = null;
 
     public void setGameOver(GameOverState state) {
-        gameOver = state;
+        gameOver.set(state);
     }
     public GameOverState getGameOver() {
-        return gameOver;
+        return gameOver.get();
+    }
+    public String getForfeitReason() {
+        return forfeitReason;
     }
 
     public void setCurrentPlayer(int player) {
@@ -122,34 +136,86 @@ public class GameManager {
     {
         //Check game mode is set to one of the bot modes.
         assert(mode != GameMode.HumanVsHuman);
-        
-        //Check if player is bot, if so, get bot input and update the state based on that.
+
+        IBot activeBot = null;
+
         if(mode == GameMode.HumanVsBot && currentPlayer == 1 && playerGoesFirst)
-        {
-             IMove botMove = bot.doMove(new GameState(currentState));
-             return updateGame(botMove);
-        }
+            activeBot = bot;
         else if(mode == GameMode.HumanVsBot && !playerGoesFirst && currentPlayer == 0)
-        {
-            IMove botMove = bot.doMove(new GameState(currentState));
-            return updateGame(botMove);
+            activeBot = bot;
+        else if(mode == GameMode.BotVsBot)
+            activeBot = currentPlayer == 0 ? bot : bot2;
+
+        if (activeBot == null)
+            return false;
+
+        IMove botMove = doTimedMove(activeBot, new GameState(currentState));
+        if (botMove == null)
+            return false; // forfeitReason already set
+
+        return updateGame(botMove);
+    }
+
+    /**
+     * Executes bot.doMove() with time enforcement.
+     * Local bots must respond within timePerMove ms or forfeit.
+     * Network bots are exempt from the time limit but a warning is printed if slow.
+     * Returns null if the bot should forfeit (timeout, exception, or null move).
+     */
+    private IMove doTimedMove(IBot activeBot, IGameState state) {
+        long timeLimit = state.getTimePerMove();
+        boolean isNetwork = activeBot.isNetworkBot();
+        long effectiveTimeout = isNetwork ? NETWORK_BOT_TIMEOUT_MS : timeLimit;
+
+        Future<IMove> future = moveExecutor.submit(() -> activeBot.doMove(state));
+        long startTime = System.currentTimeMillis();
+        IMove move;
+        try {
+            move = future.get(effectiveTimeout, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            if (isNetwork) {
+                System.err.println("[WARN] Network bot '" + activeBot.getBotName()
+                        + "' did not respond within " + effectiveTimeout + "ms (server unreachable?)");
+            } else {
+                System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
+                        + "' exceeded time limit of " + timeLimit + "ms");
+            }
+            forfeitReason = "exceeded time limit (" + effectiveTimeout + "ms)";
+            return null;
+        } catch (ExecutionException e) {
+            System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
+                    + "' threw exception: " + e.getCause().getMessage());
+            forfeitReason = "threw exception: " + e.getCause().getMessage();
+            return null;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            forfeitReason = "interrupted";
+            return null;
         }
-        
-        //Check bot is not equal to null, and throw an exception if it is.
-        assert(bot != null);
-        assert(bot2 != null);
+        long elapsed = System.currentTimeMillis() - startTime;
 
-        //Check if player is bot, if so, get bot input and update the state based on that.
-        if(mode == GameMode.BotVsBot)
-        {
-            assert(bot != null);
-            assert(bot2 != null);
-
-            IMove botMove = currentPlayer == 0 ? bot.doMove(new GameState(currentState)) : bot2.doMove(new GameState(currentState));
-
-            return updateGame(botMove);
+        // Network bot slow response warning (server overloaded)
+        if (isNetwork && elapsed > timeLimit) {
+            System.err.println("[WARN] Network bot '" + activeBot.getBotName()
+                    + "' responded in " + elapsed + "ms (server is overloaded and answering slowly)");
         }
-        return false;
+
+        // Check for local bot exceeding time (future.get may return just before timeout)
+        if (!isNetwork && elapsed > timeLimit) {
+            System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
+                    + "' took " + elapsed + "ms (limit: " + timeLimit + "ms)");
+            forfeitReason = "took " + elapsed + "ms (limit: " + timeLimit + "ms)";
+            return null;
+        }
+
+        if (move == null) {
+            System.err.println("[FORFEIT] Bot '" + activeBot.getBotName() + "' returned null move");
+            forfeitReason = "returned null move";
+            return null;
+        }
+
+        return move;
     }
 
 
@@ -196,9 +262,9 @@ public class GameManager {
             
             //Check macro win
             if(isWin(macroBoard,new Move(macroX,macroY), ""+currentPlayer))
-                gameOver = GameOverState.Win;
+                gameOver.set(GameOverState.Win);
             else if(isTie(macroBoard,new Move(macroX,macroY)))
-                gameOver = GameOverState.Tie;
+                gameOver.set(GameOverState.Tie);
         }
 
     }

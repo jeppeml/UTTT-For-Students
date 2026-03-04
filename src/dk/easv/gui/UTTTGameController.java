@@ -1,6 +1,6 @@
 package dk.easv.gui;
 
-import com.jfoenix.controls.JFXButton;
+import javafx.scene.control.Button;
 
 import dk.easv.bll.bot.*;
 
@@ -34,7 +34,7 @@ public class UTTTGameController implements Initializable {
     private StackPane stackMain;
 
     private final GridPane[][] gridMicros = new GridPane[3][3];
-    private final JFXButton[][] jfxButtons = new JFXButton[9][9];
+    private final Button[][] jfxButtons = new Button[9][9];
 
     BoardModel model;
     StatsModel statsModel;
@@ -56,13 +56,13 @@ public class UTTTGameController implements Initializable {
 
         model.addListener(observable -> update());
 
-        // HumanVsHuman
+        // HumanVsHuman — no setup needed, human clicks handle moves
         if (player0 != null && player1 != null) {
-
+            // no-op
         }
-        // HumanVsAI
+        // HumanVsAI — no setup needed, bot responds after human click
         else if (bot1 != null && player0 != null) {
-
+            // no-op
         }
         // AIvsHuman
         else if (bot0 != null && player1 != null) {
@@ -75,8 +75,8 @@ public class UTTTGameController implements Initializable {
             Thread t = new Thread(() -> {
                 while (model.getGameOverState() == GameManager.GameOverState.Active
                         && model.getGameState().getField().getAvailableMoves().size()>0) {
-                    // FIX HERE, KEEPS ASKING FOR VALID MOVE IF BOT PLAYS INVALID
                     boolean isValid = doBotMove();
+                    if (!isValid) break;
                     try {
                         Thread.sleep(botDelay);
                     }
@@ -240,8 +240,7 @@ public class UTTTGameController implements Initializable {
                 GridPane gp = gridMicros[i][k];
                 for (int x = 0; x < 3; x++) {
                     for (int y = 0; y < 3; y++) {
-                        JFXButton btn = new JFXButton("");
-                        btn.setButtonType(JFXButton.ButtonType.RAISED);
+                        Button btn = new Button("");
                         btn.getStyleClass().add("tictaccell");
                         btn.setUserData(new Move(x + i * 3, y + k * 3));
                         btn.setFocusTraversable(false);
@@ -250,14 +249,21 @@ public class UTTTGameController implements Initializable {
                                     try {
                                         doMove((IMove) btn.getUserData()); // Player move
                                     } catch (Exception e) {
-                                        e.printStackTrace();
+                                        Logger.getLogger(UTTTGameController.class.getName())
+                                                .log(Level.SEVERE, "Error processing move", e);
                                     }
 
                                     boolean isHumanVsBot = player0 != null ^ player1 != null;
                                     if (model.getGameOverState() == GameManager.GameOverState.Active && isHumanVsBot) {
                                         int currentPlayer = model.getCurrentPlayer();
-                                        Boolean valid = model.doMove();
-                                        checkAndLockIfGameEnd(currentPlayer);
+                                        boolean valid = model.doMove();
+                                        if (!valid) {
+                                            int opponent = (model.getCurrentPlayer() + 1) % 2;
+                                            model.forceGameOver(opponent);
+                                            showWinnerPane("" + opponent);
+                                        } else {
+                                            checkAndLockIfGameEnd(currentPlayer);
+                                        }
                                     }
                                 }
                         );
@@ -340,6 +346,7 @@ public class UTTTGameController implements Initializable {
         gridMacro.add(lbl, x, y);
     }
 
+    /** Debug helper — prints the board to stdout. Not used in production. */
     private void printBoardInConsole() {
         String[][] board = model.getGameState().getField().getBoard();
         for (int i = 0; i < board.length; i++) {

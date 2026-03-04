@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Field implements IField{
 
-    volatile String[][] board = new String[9][9];
-    volatile String[][] macroBoard = new String[3][3];
+    private String[][] board = new String[9][9];
+    private String[][] macroBoard = new String[3][3];
 
     public Field() {
         clearBoard();
