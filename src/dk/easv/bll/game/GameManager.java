@@ -195,12 +195,6 @@ public class GameManager {
         }
         long elapsed = System.currentTimeMillis() - startTime;
 
-        // Network bot slow response warning (server overloaded)
-        if (isNetwork && elapsed > timeLimit) {
-            System.err.println("[WARN] Network bot '" + activeBot.getBotName()
-                    + "' responded in " + elapsed + "ms (server is overloaded and answering slowly)");
-        }
-
         // Check for local bot exceeding time (future.get may return just before timeout)
         if (!isNetwork && elapsed > timeLimit) {
             System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
