@@ -28,9 +28,9 @@
             <RowConstraints minHeight="10.0" percentHeight="12.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" percentHeight="8.0" prefHeight="30.0" vgrow="ALWAYS" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-          <RowConstraints minHeight="10.0" percentHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" percentHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" percentHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="NEVER" />
+          <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" percentHeight="5.0" prefHeight="30.0" vgrow="NEVER" />
             <RowConstraints minHeight="10.0" percentHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
 
@@ -44,12 +44,12 @@
                <GridPane.margin>
                   <Insets />
                </GridPane.margin></Button>
-            <RadioButton fx:id="radioLeftHuman" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#clickSelector" selected="true" styleClass="selectors" text="Human" GridPane.rowIndex="3">
+            <RadioButton fx:id="radioLeftHuman" maxWidth="1.7976931348623157E308" onAction="#clickSelector" selected="true" styleClass="selectors" text="Human" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                <toggleGroup>
                   <ToggleGroup fx:id="toggleLeft" />
                </toggleGroup>
             </RadioButton>
-            <TextField fx:id="txtHumanNameRight" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <TextField fx:id="txtHumanNameRight" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                <styleClass>
                   <String fx:value="selectors" />
                   <String fx:value="namesetter" />
@@ -57,8 +57,8 @@
                <GridPane.margin>
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin></TextField>
-            <RadioButton fx:id="radioLeftAI" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#clickSelector" styleClass="selectors" text="AI" toggleGroup="$toggleLeft" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <ComboBox fx:id="comboBotsLeft" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="138.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <RadioButton fx:id="radioLeftAI" maxWidth="1.7976931348623157E308" onAction="#clickSelector" styleClass="selectors" text="AI" toggleGroup="$toggleLeft" GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+            <ComboBox fx:id="comboBotsLeft" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="138.0" GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                <styleClass>
                   <String fx:value="selectors" />
                   <String fx:value="namesetter" />
@@ -74,13 +74,13 @@
                <GridPane.margin>
                   <Insets />
                </GridPane.margin></Button>
-            <RadioButton fx:id="radioRightHuman" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#clickSelector" selected="true" styleClass="selectors" text="Human" GridPane.columnIndex="2" GridPane.rowIndex="3">
+            <RadioButton fx:id="radioRightHuman" maxWidth="1.7976931348623157E308" onAction="#clickSelector" selected="true" styleClass="selectors" text="Human" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                <toggleGroup>
                   <ToggleGroup fx:id="toggleRight" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="radioRightAI" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#clickSelector" styleClass="selectors" text="AI" toggleGroup="$toggleRight" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-            <TextField fx:id="txtHumanNameLeft" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="4">
+            <RadioButton fx:id="radioRightAI" maxWidth="1.7976931348623157E308" onAction="#clickSelector" styleClass="selectors" text="AI" toggleGroup="$toggleRight" GridPane.columnIndex="3" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+            <TextField fx:id="txtHumanNameLeft" maxWidth="1.7976931348623157E308" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                <styleClass>
                   <String fx:value="selectors" />
                   <String fx:value="namesetter" />
@@ -88,7 +88,7 @@
                <GridPane.margin>
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin></TextField>
-            <ComboBox fx:id="comboBotsRight" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="124.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <ComboBox fx:id="comboBotsRight" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="124.0" GridPane.columnIndex="3" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                <styleClass>
                   <String fx:value="selectors" />
                   <String fx:value="namesetter" />
