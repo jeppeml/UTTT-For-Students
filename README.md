@@ -10,16 +10,41 @@ Open the project as a Maven project. Dependencies are resolved automatically via
 Here is a nice explanation of the rules of the game https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/
 
 ## Bots
-The game can be played as either human or bot, and any combination can be used. human-human, human-bot, bot-human or bot-bot.
+The game can be played as either human or bot, and any combination can be used: human-human, human-bot, bot-human or bot-bot.
 
-The bots must follow the IBot interface in the BLL package. The game uses reflection for loading class files from the Bots folder under BLL. So to implement your own bot, you simple create a bot that extends IBot and put the files in the BLL folder.
+The bots must follow the IBot interface in the BLL package. The game uses reflection for loading class files from the Bots folder under BLL. To implement your own bot, create a class that implements IBot and place it in the `dk.easv.bll.bot` package.
 
-When the game starts it creates a list of the bot names in the project root folder. This is for usage with online tournament tools.
+When the game starts it creates a list of the bot names in the project root folder (`bots.txt`). This is for usage with online tournament tools.
 
-The bots provided with the game are very simple and you can probably beat them relatively easy, however they show the basic idea behind the IBot interface and how to interact with the game state.
+The bots provided with the game are simple examples — see `src/dk/easv/bll/bot/README.md` for descriptions.
 
-## Simulation
-The game can also simulate games. This way if you choose bot vs bot, you can simulate many games as fast as you processor allows it and this way you can check if your AI/bot is better than other bots.
+### REST Bot (TeacherBotRESTv2)
+A REST client bot that plays against a remote server hosting stronger MCTS bots. Requires a network connection to the bot server (EASV VPN for production, or local Proxmox IP for home testing). Change `SERVER_URL` in `TeacherBotRESTv2.java` to point to your server. Change `DEFAULT_SLUG` to select the bot strength:
+- `teacher` — Basic MCTS (strength 2.0)
+- `r16linrave` — MCTS + RAVE (strength 3.0)
+- `r19bitreuse` — Bitboard + tree reuse + RAVE (strength 3.5)
+- `r20multiroll` — R19 + multi-rollout (strength 4.0)
+
+Network/connection errors are clearly reported instead of showing as "false move".
+
+## Game Features
+
+### Bot Move Delay
+Configurable delay (0–2500ms, default 1000ms) for bot-vs-bot games so you can watch the game progress.
+
+### Simulation
+Run bulk bot-vs-bot games across all CPU cores. Games are split evenly: half with bot A as player 0, half swapped. The simulation slider goes from 1 to 200 games.
+
+### Stats Window
+The stats window shows:
+- **Current Games** — live view of in-progress games with macroboard state (● player 0 wins, ◆ player 1 wins, = tie, · open) and whose turn it is (▶)
+- **Finished Games** — split into two columns per player with accumulated W/L/T ratios
+- **Progress bar** — animated indeterminate bar while simulation is running
+- **Warning banner** — reminder about REST bot server load (closeable)
+
+When both bots have the same name, they're automatically suffixed (#1, #2) to distinguish them in stats.
+
+During bot-vs-bot games, the UI disables the board to prevent accidental clicks while the AI is computing.
 
 ## YouTube on setup in IntelliJ
 https://www.youtube.com/watch?v=WU1eJXllIgU

@@ -5,7 +5,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Priority?>
@@ -36,10 +38,12 @@
         </HBox>
         <!-- Row 1: Progress bar -->
         <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="6" visible="false" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-        <!-- Row 2: Current Games headline with legend -->
-        <Label alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" styleClass="active-games-label" text="Current Games &#x2014; &#x25B6; turn  &#x25CF; player 0  &#x25C6; player 1  = tie  &#xB7; open" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-        <!-- Row 3: Active games list -->
-        <ListView fx:id="listActiveGames" styleClass="active-games-list" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+        <!-- Row 2: Current Games headline -->
+        <Label fx:id="lblCurrentGames" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="active-games-label" text="Current Games" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+        <!-- Row 3: Active games flow -->
+        <ScrollPane fitToWidth="true" styleClass="active-games-scroll" GridPane.columnSpan="2" GridPane.rowIndex="3">
+            <FlowPane fx:id="flowActiveGames" hgap="8" vgap="8" styleClass="active-games-flow" />
+        </ScrollPane>
         <!-- Row 4: Finished Games headline -->
         <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="active-games-label" text="Finished Games" GridPane.columnSpan="2" GridPane.rowIndex="4" />
         <!-- Row 5: Player name headers -->
