@@ -30,13 +30,33 @@
     -fx-background-color: red;
     -fx-background-radius: 0;
 }
+.playerTIE{
+    -fx-background-color: rgb(77,102,204);
+    -fx-background-radius: 0;
+}
+
+/* Compound selectors to ensure player colors override component backgrounds */
 .tictaccell.player0,
 .tictaccell.player1{
     -fx-background-insets: 1;
 }
-.playerTIE{
+.winner-label.player0{
+    -fx-background-color: green;
+}
+.winner-label.player1{
+    -fx-background-color: red;
+}
+.winner-label.playerTIE{
     -fx-background-color: rgb(77,102,204);
-    -fx-background-radius: 0;
+}
+.winner-text.player0{
+    -fx-background-color: rgba(0, 128, 0, 0.7);
+}
+.winner-text.player1{
+    -fx-background-color: rgba(255, 0, 0, 0.7);
+}
+.winner-text.playerTIE{
+    -fx-background-color: rgba(73, 117, 215, 0.18);
 }
 
 .highlight{
