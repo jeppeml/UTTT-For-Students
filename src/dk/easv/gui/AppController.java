@@ -72,7 +72,9 @@ public class AppController implements Initializable {
     private ToggleButton toggleBtnSim;
     @FXML
     private Slider sliderSim;
-    
+    @FXML
+    private Label lblBotSpeed;
+
     private Stage statsWindow  = null;
 
     @Override
@@ -105,6 +107,9 @@ public class AppController implements Initializable {
         comboBotsRight.getSelectionModel().selectFirst();
         comboBotsRight.setDisable(true);
         simulation.bind(toggleBtnSim.selectedProperty());
+        sliderSpeed.valueProperty().addListener((obs, oldVal, newVal) ->
+                lblBotSpeed.setText("Bot speed: " + Math.round(sliderSpeed.getMax() - newVal.doubleValue()) + "ms"));
+        lblBotSpeed.setText("Bot speed: " + Math.round(sliderSpeed.getMax() - sliderSpeed.getValue()) + "ms");
         /*simulation.addListener((obs,old,isSelected)->{
             if(isSelected){
                 

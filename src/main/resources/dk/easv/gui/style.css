@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Love+Ya+Like+A+Sister');
 
+.root{
+    -icons-color: white;
+    -fx-background-color: rgb(230, 239, 255);
+    -fx-font-family: 'Love Ya Like A Sister', cursive;
+}
+
+/* ── Game board cells ─────────────────────────────── */
+
 .tictaccell{
     -fx-font-size: 24px;
     -fx-text-fill: white;
@@ -11,24 +19,34 @@
     -fx-alignment: CENTER;
 }
 
-.winmsg{
-    -fx-font-size:440px;
-    -fx-opacity: 0.7;
+.empty{
 }
+
+.player0{
+    -fx-background-color: green;
+    -fx-background-radius: 0;
+}
+.player1{
+    -fx-background-color: red;
+    -fx-background-radius: 0;
+}
+.playerTIE{
+    -fx-background-color: rgb(77,102,204);
+    -fx-background-radius: 0;
+}
+
+.highlight{
+    -fx-border-style: solid;
+    -fx-border-color: gold;
+    -fx-border-width: 5px;
+    -fx-background-color: rgba(255, 215, 0, 0.15);
+}
+
+/* ── Start screen ─────────────────────────────────── */
 
 .game-headline{
     -fx-font-size: 65px;
     -fx-text-fill: black;
-}
-
-.start-button{
-    -fx-font-size: 25px;
-    -fx-background-color: rgb(50, 60, 80);
-    -fx-background-radius: 0;
-    -fx-text-fill: white;
-}
-.start-button:hover{
-    -fx-background-color: rgb(70, 80, 100);
 }
 
 .start-players{
@@ -42,91 +60,38 @@
     -fx-text-fill: black;
 }
 
-.radio-button > .radio {
-    -fx-background-color: rgb(230, 239, 255), rgb(230, 239, 255);
-    -fx-background-radius: 100;
-    -fx-border-color: #888;
-    -fx-border-radius: 100;
-    -fx-padding: 3;
-}
-.radio-button:selected > .radio > .dot {
-    -fx-background-color: #333;
-    -fx-background-radius: 100;
-    -fx-padding: 4;
-}
-.radio-button > .radio > .dot {
-    -fx-background-color: transparent;
-    -fx-background-radius: 100;
-    -fx-padding: 4;
-}
-
 .selectors.namesetter{
     -fx-font-size: 15px;
 }
 
-.game-font{
-    -fx-font-family: 'Love Ya Like A Sister', cursive;
-}
-.winner-text{
-    -fx-background-color: rgba(73, 117, 215, 0.18);
-    -fx-font-size: 45px;
-    -fx-text-fill: lightgoldenrodyellow;
-    -fx-font-family: 'Love Ya Like A Sister', cursive;
-}
-.root{
-    -icons-color: white;
-    -fx-background-color: rgb(230, 239, 255);
+.radio-button{
+    -fx-background-color: transparent;
 }
 
-.glyph-icon{
-    -icons-color: lightgoldenrodyellow;
-    -fx-fill: linear-gradient(-icons-color 0%, derive(burlywood, 30%) 85%);
-    -fx-effect:  dropshadow(three-pass-box, rgba(0,0,0,1.0), 10, 0, 0, 0);
-    -glyph-size: 48px;
-}
-
-.winner-label {
-    -fx-font-size: 140px;
-    -fx-alignment: center;
-    -fx-background-color: rgba(73, 117, 215, 0.18);
-    -icons-color: lightgoldenrodyellow;
-}
-
-.stat-items{
-    -fx-text-fill: lightgoldenrodyellow;
-}
-
-.empty{
-
-}
-
-.player1{
-    -fx-background-color: red;
-    -fx-background-radius: 0;
-}
-.player0{
-    -fx-background-color: green;
-    -fx-background-radius: 0;
-}
-.playerTIE{
-    -fx-background-color: rgb(77,102,204);
-    -fx-background-radius: 0;
-}
-.highlight
-{
-    -fx-border-style: solid;
-    -fx-border-color: gold;
-    -fx-border-width: 5px;
-    -fx-background-color: rgba(255, 215, 0, 0.15);
-}
-
-.sim-box{
-    -fx-border-style: solid;
+.text-field, .combo-box{
+    -fx-background-color: white;
     -fx-border-color: rgb(180, 190, 210);
-    -fx-border-width: 1;
-    -fx-border-radius: 3;
-    -fx-background-color: rgb(215, 225, 245);
-    -fx-background-radius: 3;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+}
+
+.slider .track{
+    -fx-background-color: rgb(180, 190, 210);
+}
+.slider .thumb{
+    -fx-background-color: rgb(70, 100, 180);
+}
+
+/* ── Buttons ──────────────────────────────────────── */
+
+.start-button{
+    -fx-font-size: 25px;
+    -fx-background-color: rgb(50, 60, 80);
+    -fx-background-radius: 0;
+    -fx-text-fill: white;
+}
+.start-button:hover{
+    -fx-background-color: rgb(70, 80, 100);
 }
 
 .action-button{
@@ -138,4 +103,50 @@
 }
 .action-button:hover{
     -fx-background-color: rgb(70, 80, 100);
+}
+.action-button:disabled{
+    -fx-background-color: rgb(160, 170, 185);
+    -fx-opacity: 0.7;
+}
+
+/* ── Simulate box ─────────────────────────────────── */
+
+.sim-box{
+    -fx-border-style: solid;
+    -fx-border-color: rgb(180, 190, 210);
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-color: rgb(215, 225, 245);
+    -fx-background-radius: 3;
+}
+
+/* ── Win screen ───────────────────────────────────── */
+
+.winmsg{
+    -fx-font-size: 440px;
+    -fx-opacity: 0.7;
+}
+
+.winner-text{
+    -fx-background-color: rgba(73, 117, 215, 0.18);
+    -fx-font-size: 45px;
+    -fx-text-fill: lightgoldenrodyellow;
+}
+
+.winner-label{
+    -fx-font-size: 140px;
+    -fx-alignment: center;
+    -fx-background-color: rgba(73, 117, 215, 0.18);
+    -icons-color: lightgoldenrodyellow;
+}
+
+.glyph-icon{
+    -icons-color: lightgoldenrodyellow;
+    -fx-fill: linear-gradient(-icons-color 0%, derive(burlywood, 30%) 85%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1.0), 10, 0, 0, 0);
+    -glyph-size: 48px;
+}
+
+.stat-items{
+    -fx-text-fill: lightgoldenrodyellow;
 }
