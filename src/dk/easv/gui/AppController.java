@@ -108,8 +108,8 @@ public class AppController implements Initializable {
         btnStartSim.setGraphic(de.jensd.fx.glyphs.fontawesome.utils.FontAwesomeIconFactory.get()
                 .createIcon(de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.EXTERNAL_LINK, "16"));
         sliderSpeed.valueProperty().addListener((obs, oldVal, newVal) ->
-                lblBotSpeed.setText("Bot speed: " + Math.round(sliderSpeed.getMax() - newVal.doubleValue()) + "ms"));
-        lblBotSpeed.setText("Bot speed: " + Math.round(sliderSpeed.getMax() - sliderSpeed.getValue()) + "ms");
+                lblBotSpeed.setText("Bot Move Delay: " + Math.round(newVal.doubleValue()) + "ms"));
+        lblBotSpeed.setText("Bot Move Delay: " + Math.round(sliderSpeed.getValue()) + "ms");
         sliderSim.valueProperty().addListener((obs, oldVal, newVal) ->
                 lblSimCount.setText(Math.round(newVal.doubleValue()) + ""));
         lblSimCount.setText(Math.round(sliderSim.getValue()) + "");
@@ -358,7 +358,7 @@ public class AppController implements Initializable {
                         + " vs "
                         + txtHumanNameRight.getText());
             }
-            controller.setSpeed(sliderSpeed.getMax() - sliderSpeed.getValue());
+            controller.setSpeed(sliderSpeed.getValue());
             controller.startGame();
             controller.setStatsModel(statsModel);
             Scene scene = new Scene(root);

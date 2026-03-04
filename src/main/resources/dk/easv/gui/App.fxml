@@ -97,8 +97,8 @@
                   <Insets left="5.0" right="5.0" />
                </GridPane.margin></ComboBox>
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="game-headline" text="SEA - Ultimate Tic Tac Toe" textAlignment="CENTER" GridPane.columnSpan="4" />
-            <Slider fx:id="sliderSpeed" blockIncrement="100.0" focusTraversable="false" majorTickUnit="1000.0" max="2500.0" minorTickCount="50" snapToTicks="true" value="2000.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-            <Label fx:id="lblBotSpeed" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="selectors" text="Bot speed" GridPane.rowIndex="1" />
+            <Slider fx:id="sliderSpeed" blockIncrement="100.0" focusTraversable="false" majorTickUnit="1000.0" max="2500.0" minorTickCount="50" snapToTicks="true" value="1000.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+            <Label fx:id="lblBotSpeed" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="selectors" text="Bot Move Delay" GridPane.rowIndex="1" />
             <Button alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" onAction="#clickOpenStats" styleClass="action-button" text="Open stats" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
             <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="sim-box" GridPane.columnSpan="4" GridPane.rowIndex="5">
                <padding>
