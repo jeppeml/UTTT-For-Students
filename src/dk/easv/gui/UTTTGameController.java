@@ -55,6 +55,7 @@ public class UTTTGameController implements Initializable {
         }
 
         model.addListener(observable -> update());
+        update(); // Show initial state (all macroboards highlighted as available)
 
         // HumanVsHuman — no setup needed, human clicks handle moves
         if (player0 != null && player1 != null) {
