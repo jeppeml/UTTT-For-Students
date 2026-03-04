@@ -39,6 +39,7 @@
 
     </dependencies>
     <build>
+        <sourceDirectory>src</sourceDirectory>
         <plugins>
             <!-- Maven Compiler Plugin (Ensures Java 23) -->
             <plugin>

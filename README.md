@@ -4,7 +4,10 @@ This is an implementation of the Ultimate Tic Tac Toe game. The game is written 
 ![Screenshot of gameplay](/UTTT%20game%20screenshot.png)
 
 ## Getting it to work in IntelliJ
-Open the project as a Maven project. Dependencies are resolved automatically via `pom.xml`.
+1. Open the project as a Maven project. Dependencies (including JavaFX) are resolved automatically via `pom.xml`.
+2. Run `Launcher` (in `src/dk/easv/Launcher.java`) — click the green play arrow next to its `main` method.
+
+Any JDK 21+ works (no special JavaFX distribution needed).
 
 ## Game rules
 Here is a nice explanation of the rules of the game https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/
