@@ -1,18 +1,10 @@
 # UTTT-For-Students
-This is an implementation of the Ultimate Tic Tac Toe game. The game is written in Java using JavaFX, FontAwesoneFX by Jens Deters and JFoenix.
+This is an implementation of the Ultimate Tic Tac Toe game. The game is written in Java using JavaFX, FontAwesomeFX by Jens Deters and AtlantaFX for theming.
 
 ![Screenshot of gameplay](/UTTT%20game%20screenshot.png)
 
 ## Getting it to work in IntelliJ
-You have to setup your VM options
-
-This is because of the jfoenix framework.
-
-Edit your run configuration->Modify Options->Add VM Options
-
-Add this line
-
-```--add-opens java.base/java.lang.reflect=ALL-UNNAMED```
+Open the project as a Maven project. Dependencies are resolved automatically via `pom.xml`.
 
 ## Game rules
 Here is a nice explanation of the rules of the game https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/
@@ -24,7 +16,7 @@ The bots must follow the IBot interface in the BLL package. The game uses reflec
 
 When the game starts it creates a list of the bot names in the project root folder. This is for usage with online tournament tools.
 
-The bots provided with the game are very simple and you can probably beat them relatively easy, however they show the basic idea behind the IBot interface and how to interact with the game state. 
+The bots provided with the game are very simple and you can probably beat them relatively easy, however they show the basic idea behind the IBot interface and how to interact with the game state.
 
 ## Simulation
 The game can also simulate games. This way if you choose bot vs bot, you can simulate many games as fast as you processor allows it and this way you can check if your AI/bot is better than other bots.
