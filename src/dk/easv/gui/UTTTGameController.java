@@ -69,8 +69,13 @@ public class UTTTGameController implements Initializable {
         }
         // AIvsHuman
         else if (bot0 != null && player1 != null) {
-            // FIX HERE, KEEPS ASKING FOR VALID MOVE IF BOT PLAYS INVALID good for player bot not bot
-            doBotMove();
+            gridMacro.setDisable(true);
+            Thread t = new Thread(() -> {
+                doBotMove();
+                Platform.runLater(() -> gridMacro.setDisable(false));
+            });
+            t.setDaemon(true);
+            t.start();
         }
         // AIvsAI
         else if (bot0 != null && bot1 != null) {
@@ -246,15 +251,23 @@ public class UTTTGameController implements Initializable {
 
                                     boolean isHumanVsBot = player0 != null ^ player1 != null;
                                     if (model.getGameOverState() == GameManager.GameOverState.Active && isHumanVsBot) {
-                                        int currentPlayer = model.getCurrentPlayer();
-                                        boolean valid = model.doMove();
-                                        if (!valid) {
-                                            int opponent = (model.getCurrentPlayer() + 1) % 2;
-                                            model.forceGameOver(opponent);
-                                            showWinnerPane("" + opponent);
-                                        } else {
-                                            checkAndLockIfGameEnd(currentPlayer);
-                                        }
+                                        gridMacro.setDisable(true);
+                                        Thread t = new Thread(() -> {
+                                            int currentPlayer = model.getCurrentPlayer();
+                                            boolean valid = model.doMove();
+                                            Platform.runLater(() -> {
+                                                if (!valid) {
+                                                    int opponent = (model.getCurrentPlayer() + 1) % 2;
+                                                    model.forceGameOver(opponent);
+                                                    showWinnerPane("" + opponent);
+                                                } else {
+                                                    checkAndLockIfGameEnd(currentPlayer);
+                                                }
+                                                gridMacro.setDisable(false);
+                                            });
+                                        });
+                                        t.setDaemon(true);
+                                        t.start();
                                     }
                                 }
                         );
@@ -398,5 +411,6 @@ public class UTTTGameController implements Initializable {
 
     public void setStatsModel(StatsModel statsModel) {
         this.statsModel = statsModel;
+        statsModel.setPlayerNames(name0, name1);
     }
 }

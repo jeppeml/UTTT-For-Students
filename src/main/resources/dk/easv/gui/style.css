@@ -201,3 +201,27 @@
 .stat-items{
     -fx-text-fill: lightgoldenrodyellow;
 }
+
+.active-games-list .list-cell{
+    -fx-font-size: 13px;
+    -fx-padding: 3 6;
+}
+.active-games-list .list-cell.player0{
+    -fx-text-fill: green;
+}
+.active-games-list .list-cell.player1{
+    -fx-text-fill: red;
+}
+
+.warning-banner{
+    -fx-background-color: rgb(230, 200, 100);
+    -fx-background-radius: 4;
+    -fx-font-size: 13px;
+}
+.warning-close{
+    -fx-background-color: transparent;
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 2 6;
+}

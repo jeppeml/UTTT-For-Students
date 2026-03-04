@@ -65,6 +65,7 @@ public class AppController implements Initializable {
     private final AtomicInteger winsBot1 = new AtomicInteger(0);
     private final AtomicInteger winsBot2 = new AtomicInteger(0);
     private final AtomicInteger ties = new AtomicInteger(0);
+    private final AtomicInteger activeSimThreads = new AtomicInteger(0);
     @FXML
     private Button btnStartSim;
     @FXML
@@ -153,10 +154,15 @@ public class AppController implements Initializable {
         winsBot1.set(0);
         winsBot2.set(0);
         ties.set(0);
+        long perThread = amountOfSimulations / multiCores;
+        long remainder = amountOfSimulations % multiCores;
+        activeSimThreads.set(multiCores);
+        statsModel.simulatingProperty().set(true);
         for (int i = 0; i < multiCores; i++) {
+            long count = perThread + (i < remainder ? 1 : 0);
             Thread t = new Thread(
-                    new Simulator(amountOfSimulations/multiCores, 
-                        this.comboBotsLeft.getValue().getClass(), 
+                    new Simulator(count,
+                        this.comboBotsLeft.getValue().getClass(),
                         this.comboBotsRight.getValue().getClass()));
             t.setDaemon(true);
             t.start();
@@ -205,8 +211,12 @@ public class AppController implements Initializable {
         
         @Override
         public void run() {
-            for (int i = 0; i < amountOfSimulations/2; i++) {
+            long firstHalf = amountOfSimulations / 2;
+            long secondHalf = amountOfSimulations - firstHalf;
+            for (int i = 0; i < firstHalf; i++) {
                 BoardModel model = new BoardModel(bot1, bot2);
+                ActiveGame ag = new ActiveGame(name1, name2);
+                Platform.runLater(() -> statsModel.getActiveGames().add(ag));
                 int currentPlayer = 0;
                 while (model.getGameOverState() == GameManager.GameOverState.Active
                          && model.getGameState().getField().getAvailableMoves().size()>0) {
@@ -219,7 +229,9 @@ public class AppController implements Initializable {
                         currentPlayer = opponent;
                         break;
                     }
+                    updateActiveGame(ag, model);
                 }
+                Platform.runLater(() -> statsModel.getActiveGames().remove(ag));
                 // There is a tie
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
                     this.addGameResult(
@@ -246,10 +258,13 @@ public class AppController implements Initializable {
                                     name2,
                                     winResult));
                 }
+                updateTitle();
 
             }
-            for (int i = 0; i < amountOfSimulations/2; i++) {
+            for (int i = 0; i < secondHalf; i++) {
                 BoardModel model = new BoardModel(bot2, bot1);
+                ActiveGame ag = new ActiveGame(name2, name1);
+                Platform.runLater(() -> statsModel.getActiveGames().add(ag));
                 int currentPlayer = 0;
                 while (model.getGameOverState() == GameManager.GameOverState.Active
                          && model.getGameState().getField().getAvailableMoves().size()>0) {
@@ -261,7 +276,9 @@ public class AppController implements Initializable {
                         currentPlayer = opponent;
                         break;
                     }
+                    updateActiveGame(ag, model);
                 }
+                Platform.runLater(() -> statsModel.getActiveGames().remove(ag));
                 // There is a tie
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
                     this.addGameResult(
@@ -288,16 +305,28 @@ public class AppController implements Initializable {
                                     name1,
                                     winResult));
                 }
+                updateTitle();
 
             }
-            setSimulationResults(name1 + " vs " +
+            if (activeSimThreads.decrementAndGet() == 0) {
+                Platform.runLater(() -> statsModel.simulatingProperty().set(false));
+            }
+        }
+        private void updateActiveGame(ActiveGame ag, BoardModel model) {
+            String[][] macro = model.getMacroboard();
+            String[][] copy = new String[3][3];
+            for (int a = 0; a < 3; a++)
+                System.arraycopy(macro[a], 0, copy[a], 0, 3);
+            int cp = model.getCurrentPlayer();
+            Platform.runLater(() -> ag.updateFrom(cp, copy));
+        }
+
+        private void updateTitle() {
+            Platform.runLater(() ->
+                statsModel.setLastSimulationResults(name1 + " vs " +
                         name2 + " | " +
                         "w/w/t " + winsBot1.get() + "/" +
-                        winsBot2.get() + "/" + ties.get());
-        }
-        private void setSimulationResults(String result) {
-            Platform.runLater(()-> 
-                statsModel.setLastSimulationResults(result));
+                        winsBot2.get() + "/" + ties.get()));
         }
         private void addGameResult(GameResult gameResult) {
             Platform.runLater(()->
@@ -320,8 +349,15 @@ public class AppController implements Initializable {
 
     @FXML
     private void clickStartSimulation(ActionEvent event) throws IOException {
-        startSimulation(Math.round(sliderSim.getValue()));
+        String n0 = comboBotsLeft.getValue().getBotName();
+        String n1 = comboBotsRight.getValue().getBotName();
+        if (n0.equals(n1)) {
+            statsModel.setPlayerNames(n0 + " #1", n1 + " #2");
+        } else {
+            statsModel.setPlayerNames(n0, n1);
+        }
         statsModel.clear();
+        startSimulation(Math.round(sliderSim.getValue()));
         openStatsWindow();
     }
 

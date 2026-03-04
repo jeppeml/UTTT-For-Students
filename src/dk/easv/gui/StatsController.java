@@ -17,6 +17,8 @@ import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class StatsController implements Initializable {
@@ -25,8 +27,11 @@ public class StatsController implements Initializable {
     @FXML private Label lblP1Name;
     @FXML private Label lblP0Stats;
     @FXML private Label lblP1Stats;
+    @FXML private ListView<ActiveGame> listActiveGames;
     @FXML private ListView<GameResult> listP0Wins;
     @FXML private ListView<GameResult> listP1Wins;
+    @FXML private ProgressBar progressBar;
+    @FXML private HBox warningBanner;
 
     private StatsModel statsModel;
     private final ObservableList<GameResult> p0WinResults = FXCollections.observableArrayList();
@@ -50,6 +55,18 @@ public class StatsController implements Initializable {
     public void setStatsModel(StatsModel statsModel, Stage stage) {
         this.statsModel = statsModel;
         stage.titleProperty().bind(statsModel.lastSimulationResultsProperty());
+
+        // Bind player names from model
+        lblP0Name.textProperty().bind(statsModel.player0NameProperty());
+        lblP1Name.textProperty().bind(statsModel.player1NameProperty());
+
+        // Bind progress bar to simulating state
+        progressBar.visibleProperty().bind(statsModel.simulatingProperty());
+        progressBar.setProgress(-1); // indeterminate
+
+        // Bind active games list
+        listActiveGames.setItems(statsModel.getActiveGames());
+        listActiveGames.setCellFactory(p -> new ActiveGameCell());
 
         for (GameResult result : statsModel.getGameResults()) {
             handleNewResult(result);
@@ -99,16 +116,12 @@ public class StatsController implements Initializable {
     }
 
     private void updateLabels() {
-        if (participantA != null) {
-            lblP0Name.setText(participantA);
-            lblP1Name.setText(participantB);
+        if (totalGames > 0) {
             lblP0Stats.setText(String.format("%dW / %dL / %dT  (%.1f%%)",
-                    aWins, bWins, tieCount, totalGames > 0 ? (aWins * 100.0 / totalGames) : 0));
+                    aWins, bWins, tieCount, aWins * 100.0 / totalGames));
             lblP1Stats.setText(String.format("%dW / %dL / %dT  (%.1f%%)",
-                    bWins, aWins, tieCount, totalGames > 0 ? (bWins * 100.0 / totalGames) : 0));
+                    bWins, aWins, tieCount, bWins * 100.0 / totalGames));
         } else {
-            lblP0Name.setText("Player 0");
-            lblP1Name.setText("Player 1");
             lblP0Stats.setText("");
             lblP1Stats.setText("");
         }
@@ -126,6 +139,33 @@ public class StatsController implements Initializable {
     @FXML
     private void clickClearList(ActionEvent event) {
         statsModel.clear();
+    }
+
+    @FXML
+    private void clickDismissWarning(ActionEvent event) {
+        warningBanner.setVisible(false);
+        warningBanner.setManaged(false);
+    }
+
+    private class ActiveGameCell extends ListCell<ActiveGame> {
+        @Override
+        protected void updateItem(ActiveGame item, boolean empty) {
+            super.updateItem(item, empty);
+            getStyleClass().removeAll("player0", "player1");
+            if (!empty && item != null) {
+                int turn = item.currentPlayerProperty().get();
+                String p0 = item.getPlayer0Name();
+                String p1 = item.getPlayer1Name();
+                String arrow = " \u25B6 "; // ▶
+                String text = turn == 0
+                        ? arrow + p0 + "  vs  " + p1
+                        : p0 + "  vs  " + arrow + p1;
+                setText(text + "   " + item.macroDisplayProperty().get());
+                getStyleClass().add("player" + turn);
+            } else {
+                setText(null);
+            }
+        }
     }
 
     private class WinResultCell extends ListCell<GameResult> {
