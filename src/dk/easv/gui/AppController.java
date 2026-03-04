@@ -179,9 +179,11 @@ public class AppController implements Initializable {
         private final long amountOfSimulations;
         private IBot bot1;
         private IBot bot2;
+        private final String name1;
+        private final String name2;
         public Simulator(
-                long amountOfSimulations, 
-                Class<? extends IBot> b1, 
+                long amountOfSimulations,
+                Class<? extends IBot> b1,
                 Class<? extends IBot> b2) {
 
             this.amountOfSimulations=amountOfSimulations;
@@ -191,6 +193,13 @@ public class AppController implements Initializable {
             }
             catch (Exception ex) {
                 throw new RuntimeException("Failed to instantiate bots for simulation", ex);
+            }
+            if (bot1.getBotName().equals(bot2.getBotName())) {
+                name1 = bot1.getBotName() + " #1";
+                name2 = bot2.getBotName() + " #2";
+            } else {
+                name1 = bot1.getBotName();
+                name2 = bot2.getBotName();
             }
         }
         
@@ -215,8 +224,8 @@ public class AppController implements Initializable {
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
                     this.addGameResult(
                             new GameResult(
-                                    bot1.getBotName(),
-                                    bot2.getBotName(),
+                                    name1,
+                                    name2,
                                     GameResult.Winner.tie));
                     ties.incrementAndGet();
                 }
@@ -233,8 +242,8 @@ public class AppController implements Initializable {
 
                     this.addGameResult(
                             new GameResult(
-                                    bot1.getBotName(),
-                                    bot2.getBotName(),
+                                    name1,
+                                    name2,
                                     winResult));
                 }
 
@@ -257,8 +266,8 @@ public class AppController implements Initializable {
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
                     this.addGameResult(
                             new GameResult(
-                                    bot2.getBotName(),
-                                    bot1.getBotName(),
+                                    name2,
+                                    name1,
                                     GameResult.Winner.tie));
                     ties.incrementAndGet();
                 }
@@ -275,14 +284,14 @@ public class AppController implements Initializable {
 
                     this.addGameResult(
                             new GameResult(
-                                    bot2.getBotName(),
-                                    bot1.getBotName(),
+                                    name2,
+                                    name1,
                                     winResult));
                 }
 
             }
-            setSimulationResults(bot1.getBotName() + " vs " +
-                        bot2.getBotName() + " | " +
+            setSimulationResults(name1 + " vs " +
+                        name2 + " | " +
                         "w/w/t " + winsBot1.get() + "/" +
                         winsBot2.get() + "/" + ties.get());
         }

@@ -42,6 +42,8 @@ public class UTTTGameController implements Initializable {
     IBot bot1 = null;
     String player0 = null;
     String player1 = null;
+    String name0 = null;
+    String name1 = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -117,22 +119,8 @@ public class UTTTGameController implements Initializable {
     }
 
     private String getNameFromId(int winnerId) {
-        if (winnerId == 0) {
-            if (bot0 != null) {
-                return bot0.getBotName();
-            }
-            else {
-                return player0;
-            }
-        }
-        else if (winnerId == 1) {
-            if (bot1 != null) {
-                return bot1.getBotName();
-            }
-            else {
-                return player1;
-            }
-        }
+        if (winnerId == 0) return name0;
+        if (winnerId == 1) return name1;
         throw new RuntimeException("Player id not found " + winnerId);
     }
 
@@ -146,8 +134,10 @@ public class UTTTGameController implements Initializable {
         else {
             int winnerId = Integer.parseInt(winner);
             winMsg = getNameFromId(winnerId) + " wins";
-            if(model.getIsForced())
-                winMsg += " (opponent false move)";
+            if(model.getIsForced()) {
+                String reason = model.getForfeitReason();
+                winMsg += reason != null ? " (" + reason + ")" : " (opponent forfeit)";
+            }
             winStatus = winnerId == 0
                     ? GameResult.Winner.player0
                     : GameResult.Winner.player1;
@@ -368,24 +358,38 @@ public class UTTTGameController implements Initializable {
         model = new BoardModel(bot0, bot1);
         this.bot0 = bot0;
         this.bot1 = bot1;
+        initNames(bot0.getBotName(), bot1.getBotName());
     }
 
     public void setupGame(String humanName, IBot bot1) {
         model = new BoardModel(bot1, true);
         this.bot1 = bot1;
         this.player0 = humanName;
+        initNames(humanName, bot1.getBotName());
     }
 
     public void setupGame(IBot bot0, String humanName) {
         model = new BoardModel(bot0, false);
         this.bot0 = bot0;
         this.player1 = humanName;
+        initNames(bot0.getBotName(), humanName);
     }
 
     public void setupGame(String humanName0, String humanName1) {
         model = new BoardModel();
         this.player0 = humanName0;
         this.player1 = humanName1;
+        initNames(humanName0, humanName1);
+    }
+
+    private void initNames(String n0, String n1) {
+        if (n0.equals(n1)) {
+            name0 = n0 + " #1";
+            name1 = n1 + " #2";
+        } else {
+            name0 = n0;
+            name1 = n1;
+        }
     }
 
     public void setSpeed(double speed) {

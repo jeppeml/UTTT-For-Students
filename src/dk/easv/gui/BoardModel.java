@@ -92,4 +92,8 @@ public class BoardModel implements Observable{
         return isForced;
     }
 
+    public String getForfeitReason() {
+        return game.getForfeitReason();
+    }
+
 }

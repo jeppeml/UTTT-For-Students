@@ -153,7 +153,11 @@ public class GameManager {
         if (botMove == null)
             return false; // forfeitReason already set
 
-        return updateGame(botMove);
+        if (!updateGame(botMove)) {
+            forfeitReason = "illegal move (" + botMove.getX() + "," + botMove.getY() + ") by " + activeBot.getBotName();
+            return false;
+        }
+        return true;
     }
 
     /**
