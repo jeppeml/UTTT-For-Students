@@ -177,6 +177,27 @@
     -glyph-size: 48px;
 }
 
+/* ── Stats window ────────────────────────────────── */
+
+.stats-player-name{
+    -fx-font-size: 22px;
+    -fx-text-fill: white;
+    -fx-padding: 8;
+}
+.stats-player-name.player0{
+    -fx-background-color: green;
+}
+.stats-player-name.player1{
+    -fx-background-color: red;
+}
+
+.stats-ratio{
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+    -fx-padding: 4;
+    -fx-background-color: rgb(215, 225, 245);
+}
+
 .stat-items{
     -fx-text-fill: lightgoldenrodyellow;
 }
