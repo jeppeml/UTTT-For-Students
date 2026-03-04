@@ -36,9 +36,13 @@ Configurable delay (0–2500ms, default 1000ms) for bot-vs-bot games so you can 
 Run bulk bot-vs-bot games across all CPU cores. Games are split evenly: half with bot A as player 0, half swapped. The simulation slider goes from 1 to 200 games.
 
 ### Stats Window
-The stats window shows:
-- **Current Games** — live view of in-progress games with macroboard state (● player 0 wins, ◆ player 1 wins, = tie, · open) and whose turn it is (▶)
-- **Finished Games** — split into two columns per player with accumulated W/L/T ratios
+The stats window is split into two resizable sections:
+
+**Current Games** — live mini-board cards showing every active game. Each card displays the full 9x9 board with colored cells (green = player 0, red = player 1, blue = tie). Won macro-board sections turn solid. The current player's name shows a ▶ arrow. Cards appear when games start and disappear when they finish.
+
+**Finished Games** — two columns (one per player) with W/L/T stats and mini-board cards showing the final board state of each completed game.
+
+Other features:
 - **Progress bar** — animated indeterminate bar while simulation is running
 - **Warning banner** — reminder about REST bot server load (closeable)
 
