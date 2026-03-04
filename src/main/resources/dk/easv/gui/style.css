@@ -217,6 +217,11 @@
     -fx-background-color: rgb(215, 230, 250);
     -fx-background-radius: 4;
 }
+.outer-macro-grid{
+    -fx-background-color: rgb(80, 80, 80);
+    -fx-padding: 2;
+    -fx-background-radius: 1;
+}
 .card-name-p0{
     -fx-text-fill: green;
     -fx-font-size: 11px;
@@ -246,6 +251,9 @@
 }
 .micro-cell-p1{
     -fx-background-color: red;
+}
+.micro-cell-tie{
+    -fx-background-color: rgb(77, 102, 204);
 }
 .micro-cell-empty{
     -fx-background-color: rgb(220, 230, 245);
