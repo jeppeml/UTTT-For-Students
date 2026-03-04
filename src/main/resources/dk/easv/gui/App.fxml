@@ -8,7 +8,6 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -109,8 +108,9 @@
                   <Insets top="15.0" />
                </GridPane.margin>
                <children>
-                  <ToggleButton fx:id="toggleBtnSim" disable="true" styleClass="action-button" text="Simulate" />
+                  <Button fx:id="btnStartSim" disable="true" onAction="#clickStartSimulation" styleClass="action-button" text="Start Simulation" />
                   <Slider fx:id="sliderSim" blockIncrement="100.0" disable="true" majorTickUnit="100.0" max="1000.0" min="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" snapToTicks="true" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="lblSimCount" styleClass="selectors" text="1" />
                </children>
             </HBox>
          </children>

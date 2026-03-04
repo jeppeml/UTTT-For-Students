@@ -26,8 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.layout.AnchorPane;
 
@@ -64,16 +62,17 @@ public class AppController implements Initializable {
     StatsModel statsModel = new StatsModel();
     @FXML
     private AnchorPane anchorMain;
-    private BooleanProperty simulation= new SimpleBooleanProperty(false);
     private final AtomicInteger winsBot1 = new AtomicInteger(0);
     private final AtomicInteger winsBot2 = new AtomicInteger(0);
     private final AtomicInteger ties = new AtomicInteger(0);
     @FXML
-    private ToggleButton toggleBtnSim;
+    private Button btnStartSim;
     @FXML
     private Slider sliderSim;
     @FXML
     private Label lblBotSpeed;
+    @FXML
+    private Label lblSimCount;
 
     private Stage statsWindow  = null;
 
@@ -106,15 +105,14 @@ public class AppController implements Initializable {
         comboBotsLeft.setDisable(true);
         comboBotsRight.getSelectionModel().selectFirst();
         comboBotsRight.setDisable(true);
-        simulation.bind(toggleBtnSim.selectedProperty());
+        btnStartSim.setGraphic(de.jensd.fx.glyphs.fontawesome.utils.FontAwesomeIconFactory.get()
+                .createIcon(de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.EXTERNAL_LINK, "16"));
         sliderSpeed.valueProperty().addListener((obs, oldVal, newVal) ->
                 lblBotSpeed.setText("Bot speed: " + Math.round(sliderSpeed.getMax() - newVal.doubleValue()) + "ms"));
         lblBotSpeed.setText("Bot speed: " + Math.round(sliderSpeed.getMax() - sliderSpeed.getValue()) + "ms");
-        /*simulation.addListener((obs,old,isSelected)->{
-            if(isSelected){
-                
-            }
-        });*/
+        sliderSim.valueProperty().addListener((obs, oldVal, newVal) ->
+                lblSimCount.setText(Math.round(newVal.doubleValue()) + ""));
+        lblSimCount.setText(Math.round(sliderSim.getValue()) + "");
     }
 
     @FXML
@@ -169,12 +167,10 @@ public class AppController implements Initializable {
     private void clickSelector(ActionEvent event) {
         if(toggleLeft.getSelectedToggle()==radioLeftAI &&
                 toggleRight.getSelectedToggle()== radioRightAI) {
-            toggleBtnSim.setSelected(false);
-            toggleBtnSim.setDisable(false);
+            btnStartSim.setDisable(false);
             sliderSim.setDisable(false);
         } else {
-            toggleBtnSim.setSelected(false);
-            toggleBtnSim.setDisable(true);
+            btnStartSim.setDisable(true);
             sliderSim.setDisable(true);
         }
     }
@@ -314,14 +310,15 @@ public class AppController implements Initializable {
     }
 
     @FXML
+    private void clickStartSimulation(ActionEvent event) throws IOException {
+        startSimulation(Math.round(sliderSim.getValue()));
+        statsModel.clear();
+        openStatsWindow();
+    }
+
+    @FXML
     public void clickStart(ActionEvent actionEvent) throws IOException {
-        if (simulation.get()) {
-            startSimulation(Math.round(sliderSim.getValue()));
-            statsModel.clear();
-            openStatsWindow();
-        }
-        else {
-            Stage primaryStage = new Stage();
+        Stage primaryStage = new Stage();
             primaryStage.initModality(Modality.WINDOW_MODAL);
             FXMLLoader fxLoader = new FXMLLoader(getClass().getResource("UTTTGame.fxml"));
 
@@ -367,6 +364,5 @@ public class AppController implements Initializable {
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.showAndWait();
-        }
     }
 }
