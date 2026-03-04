@@ -173,7 +173,8 @@ public class StatsController implements Initializable {
         warningBanner.setManaged(false);
     }
 
-    private static final String[] CELL_STYLES = {"macro-cell-p0", "macro-cell-p1", "macro-cell-tie", "macro-cell-open"};
+    private static final String[] MICRO_STYLES = {"micro-cell-p0", "micro-cell-p1", "micro-cell-empty"};
+    private static final String[] SECTION_STYLES = {"section-p0", "section-p1", "section-tie"};
 
     private Node createCard(ActiveGame game) {
         VBox card = new VBox(2);
@@ -183,28 +184,39 @@ public class StatsController implements Initializable {
         Label nameTop = new Label(game.getPlayer0Name());
         nameTop.getStyleClass().add("card-name-p0");
 
-        GridPane grid = new GridPane();
-        grid.getStyleClass().add("macro-grid");
-        grid.setHgap(2);
-        grid.setVgap(2);
-        Region[][] cells = new Region[3][3];
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                Region cell = new Region();
-                cell.getStyleClass().add("macro-cell");
-                cell.setPrefSize(18, 18);
-                cell.setMinSize(18, 18);
-                cells[x][y] = cell;
-                grid.add(cell, x, y);
+        GridPane outerGrid = new GridPane();
+        outerGrid.setHgap(3);
+        outerGrid.setVgap(3);
+
+        Region[][] cells = new Region[9][9];
+        GridPane[][] sections = new GridPane[3][3];
+        for (int my = 0; my < 3; my++) {
+            for (int mx = 0; mx < 3; mx++) {
+                GridPane section = new GridPane();
+                section.setHgap(1);
+                section.setVgap(1);
+                section.getStyleClass().add("micro-section");
+                sections[mx][my] = section;
+                for (int cy = 0; cy < 3; cy++) {
+                    for (int cx = 0; cx < 3; cx++) {
+                        Region cell = new Region();
+                        cell.getStyleClass().add("micro-cell");
+                        cell.setPrefSize(5, 5);
+                        cell.setMinSize(5, 5);
+                        cells[mx * 3 + cx][my * 3 + cy] = cell;
+                        section.add(cell, cx, cy);
+                    }
+                }
+                outerGrid.add(section, mx, my);
             }
         }
 
         Label nameBottom = new Label(game.getPlayer1Name());
         nameBottom.getStyleClass().add("card-name-p1");
 
-        card.getChildren().addAll(nameTop, grid, nameBottom);
+        card.getChildren().addAll(nameTop, outerGrid, nameBottom);
 
-        Runnable updater = () -> updateCardContent(game, cells, nameTop, nameBottom);
+        Runnable updater = () -> updateCardContent(game, cells, sections, nameTop, nameBottom);
         updater.run();
 
         game.macroDisplayProperty().addListener((obs, old, val) -> updater.run());
@@ -213,16 +225,26 @@ public class StatsController implements Initializable {
         return card;
     }
 
-    private void updateCardContent(ActiveGame game, Region[][] cells, Label nameTop, Label nameBottom) {
+    private void updateCardContent(ActiveGame game, Region[][] cells, GridPane[][] sections,
+                                   Label nameTop, Label nameBottom) {
+        String[][] board = game.getBoardCells();
+        for (int y = 0; y < 9; y++) {
+            for (int x = 0; x < 9; x++) {
+                cells[x][y].getStyleClass().removeAll(MICRO_STYLES);
+                String val = board[x][y];
+                if ("0".equals(val)) cells[x][y].getStyleClass().add("micro-cell-p0");
+                else if ("1".equals(val)) cells[x][y].getStyleClass().add("micro-cell-p1");
+                else cells[x][y].getStyleClass().add("micro-cell-empty");
+            }
+        }
         String[][] macro = game.getMacroCells();
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                cells[x][y].getStyleClass().removeAll(CELL_STYLES);
-                String val = macro[x][y];
-                if ("0".equals(val)) cells[x][y].getStyleClass().add("macro-cell-p0");
-                else if ("1".equals(val)) cells[x][y].getStyleClass().add("macro-cell-p1");
-                else if ("TIE".equals(val)) cells[x][y].getStyleClass().add("macro-cell-tie");
-                else cells[x][y].getStyleClass().add("macro-cell-open");
+        for (int my = 0; my < 3; my++) {
+            for (int mx = 0; mx < 3; mx++) {
+                sections[mx][my].getStyleClass().removeAll(SECTION_STYLES);
+                String val = macro[mx][my];
+                if ("0".equals(val)) sections[mx][my].getStyleClass().add("section-p0");
+                else if ("1".equals(val)) sections[mx][my].getStyleClass().add("section-p1");
+                else if ("TIE".equals(val)) sections[mx][my].getStyleClass().add("section-tie");
             }
         }
         int turn = game.currentPlayerProperty().get();

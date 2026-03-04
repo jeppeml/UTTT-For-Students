@@ -227,20 +227,28 @@
     -fx-font-size: 11px;
     -fx-font-weight: bold;
 }
-.macro-cell{
+.micro-section{
+    -fx-padding: 1;
+    -fx-background-color: rgb(200, 210, 230);
     -fx-background-radius: 1;
 }
-.macro-cell-p0{
+.section-p0{
+    -fx-background-color: rgba(0, 128, 0, 0.4);
+}
+.section-p1{
+    -fx-background-color: rgba(255, 0, 0, 0.4);
+}
+.section-tie{
+    -fx-background-color: rgba(77, 102, 204, 0.5);
+}
+.micro-cell-p0{
     -fx-background-color: green;
 }
-.macro-cell-p1{
+.micro-cell-p1{
     -fx-background-color: red;
 }
-.macro-cell-tie{
-    -fx-background-color: rgb(77, 102, 204);
-}
-.macro-cell-open{
-    -fx-background-color: rgb(180, 200, 230);
+.micro-cell-empty{
+    -fx-background-color: rgb(220, 230, 245);
 }
 .active-games-label{
     -fx-font-size: 15px;

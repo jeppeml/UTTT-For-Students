@@ -314,11 +314,15 @@ public class AppController implements Initializable {
         }
         private void updateActiveGame(ActiveGame ag, BoardModel model) {
             String[][] macro = model.getMacroboard();
-            String[][] copy = new String[3][3];
+            String[][] macroCopy = new String[3][3];
             for (int a = 0; a < 3; a++)
-                System.arraycopy(macro[a], 0, copy[a], 0, 3);
+                System.arraycopy(macro[a], 0, macroCopy[a], 0, 3);
+            String[][] board = model.getBoard();
+            String[][] boardCopy = new String[9][9];
+            for (int a = 0; a < 9; a++)
+                System.arraycopy(board[a], 0, boardCopy[a], 0, 9);
             int cp = model.getCurrentPlayer();
-            Platform.runLater(() -> ag.updateFrom(cp, copy));
+            Platform.runLater(() -> ag.updateFrom(cp, boardCopy, macroCopy));
         }
 
         private void updateTitle() {
