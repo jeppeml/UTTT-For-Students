@@ -205,12 +205,18 @@
 .active-games-list .list-cell{
     -fx-font-size: 13px;
     -fx-padding: 3 6;
+    -fx-background-color: rgb(215, 230, 250);
+    -fx-text-fill: #222;
 }
-.active-games-list .list-cell.player0{
-    -fx-text-fill: green;
+.active-games-list .list-cell:empty{
+    -fx-background-color: transparent;
 }
-.active-games-list .list-cell.player1{
-    -fx-text-fill: red;
+.active-games-label{
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 4 8;
+    -fx-background-color: rgb(70, 90, 130);
 }
 
 .warning-banner{

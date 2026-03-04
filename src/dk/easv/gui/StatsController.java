@@ -151,17 +151,15 @@ public class StatsController implements Initializable {
         @Override
         protected void updateItem(ActiveGame item, boolean empty) {
             super.updateItem(item, empty);
-            getStyleClass().removeAll("player0", "player1");
             if (!empty && item != null) {
                 int turn = item.currentPlayerProperty().get();
                 String p0 = item.getPlayer0Name();
                 String p1 = item.getPlayer1Name();
-                String arrow = " \u25B6 "; // ▶
+                String arrow = "\u25B6 "; // ▶
                 String text = turn == 0
                         ? arrow + p0 + "  vs  " + p1
                         : p0 + "  vs  " + arrow + p1;
                 setText(text + "   " + item.macroDisplayProperty().get());
-                getStyleClass().add("player" + turn);
             } else {
                 setText(null);
             }

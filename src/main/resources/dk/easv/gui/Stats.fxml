@@ -18,27 +18,37 @@
     </columnConstraints>
     <rowConstraints>
         <RowConstraints vgrow="NEVER" />
+        <RowConstraints minHeight="6" prefHeight="6" vgrow="NEVER" />
+        <RowConstraints minHeight="30" prefHeight="30" vgrow="NEVER" />
+        <RowConstraints minHeight="60" prefHeight="120" vgrow="SOMETIMES" />
         <RowConstraints minHeight="40" prefHeight="45" vgrow="NEVER" />
         <RowConstraints minHeight="25" prefHeight="30" vgrow="NEVER" />
-        <RowConstraints minHeight="6" prefHeight="6" vgrow="NEVER" />
-        <RowConstraints minHeight="60" prefHeight="120" vgrow="SOMETIMES" />
         <RowConstraints minHeight="100" vgrow="ALWAYS" />
         <RowConstraints minHeight="35" prefHeight="40" vgrow="NEVER" />
     </rowConstraints>
     <children>
+        <!-- Row 0: Warning banner -->
         <HBox fx:id="warningBanner" alignment="CENTER_LEFT" spacing="8" styleClass="warning-banner" GridPane.columnSpan="2">
             <padding><Insets top="6" bottom="6" left="10" right="10" /></padding>
             <Label text="Running simulations against REST bots will stress the server. Use with caution to be fair to everyone." wrapText="true" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
             <Button onAction="#clickDismissWarning" styleClass="warning-close" text="X" />
         </HBox>
-        <Label fx:id="lblP0Name" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-player-name" text="Player 0" GridPane.rowIndex="1" />
-        <Label fx:id="lblP1Name" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-player-name" text="Player 1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Label fx:id="lblP0Stats" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-ratio" GridPane.rowIndex="2" />
-        <Label fx:id="lblP1Stats" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-ratio" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-        <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="6" visible="false" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-        <ListView fx:id="listActiveGames" styleClass="active-games-list" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-        <ListView fx:id="listP0Wins" GridPane.rowIndex="5" />
-        <ListView fx:id="listP1Wins" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#clickClearList" styleClass="action-button" text="Clear list" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+        <!-- Row 1: Progress bar -->
+        <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefHeight="6" visible="false" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+        <!-- Row 2: Current Games headline -->
+        <Label alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="active-games-label" text="Current Games" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+        <!-- Row 3: Active games list -->
+        <ListView fx:id="listActiveGames" styleClass="active-games-list" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+        <!-- Row 4: Player name headers (directly above win lists) -->
+        <Label fx:id="lblP0Name" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-player-name" text="Player 0" GridPane.rowIndex="4" />
+        <Label fx:id="lblP1Name" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-player-name" text="Player 1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <!-- Row 5: Stats ratios -->
+        <Label fx:id="lblP0Stats" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-ratio" GridPane.rowIndex="5" />
+        <Label fx:id="lblP1Stats" alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="stats-ratio" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+        <!-- Row 6: Win lists -->
+        <ListView fx:id="listP0Wins" GridPane.rowIndex="6" />
+        <ListView fx:id="listP1Wins" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+        <!-- Row 7: Clear button -->
+        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#clickClearList" styleClass="action-button" text="Clear list" GridPane.columnSpan="2" GridPane.rowIndex="7" />
     </children>
 </GridPane>
