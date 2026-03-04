@@ -43,7 +43,7 @@
 }
 
 .radio-button > .radio {
-    -fx-background-color: white, white;
+    -fx-background-color: rgb(230, 239, 255), rgb(230, 239, 255);
     -fx-background-radius: 100;
     -fx-border-color: #888;
     -fx-border-radius: 100;
@@ -118,6 +118,15 @@
     -fx-border-color: gold;
     -fx-border-width: 5px;
     -fx-background-color: rgba(255, 215, 0, 0.15);
+}
+
+.sim-box{
+    -fx-border-style: solid;
+    -fx-border-color: rgb(180, 190, 210);
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-color: rgb(215, 225, 245);
+    -fx-background-radius: 3;
 }
 
 .action-button{
