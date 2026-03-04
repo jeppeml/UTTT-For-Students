@@ -14,12 +14,11 @@ import java.time.LocalDateTime;
 public class GameResult {
     
     private String player0;
-
     private String player1;
-
     private Winner winner;
-    
     private LocalDateTime date = LocalDateTime.now();
+    private String[][] board;
+    private String[][] macroboard;
 
     public LocalDateTime getDate() {
         return date;
@@ -65,4 +64,8 @@ public class GameResult {
         this.player0 = player0;
     }
 
+    public String[][] getBoard() { return board; }
+    public void setBoard(String[][] board) { this.board = board; }
+    public String[][] getMacroboard() { return macroboard; }
+    public void setMacroboard(String[][] macroboard) { this.macroboard = macroboard; }
 }

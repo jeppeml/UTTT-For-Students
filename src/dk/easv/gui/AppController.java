@@ -234,11 +234,7 @@ public class AppController implements Initializable {
                 Platform.runLater(() -> statsModel.getActiveGames().remove(ag));
                 // There is a tie
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
-                    this.addGameResult(
-                            new GameResult(
-                                    name1,
-                                    name2,
-                                    GameResult.Winner.tie));
+                    this.addGameResult(createResult(name1, name2, GameResult.Winner.tie, model));
                     ties.incrementAndGet();
                 }
                 else { // There is a winner
@@ -251,12 +247,7 @@ public class AppController implements Initializable {
                         winsBot2.incrementAndGet();
                         winResult = GameResult.Winner.player1;
                     }
-
-                    this.addGameResult(
-                            new GameResult(
-                                    name1,
-                                    name2,
-                                    winResult));
+                    this.addGameResult(createResult(name1, name2, winResult, model));
                 }
                 updateTitle();
 
@@ -281,11 +272,7 @@ public class AppController implements Initializable {
                 Platform.runLater(() -> statsModel.getActiveGames().remove(ag));
                 // There is a tie
                 if (model.getGameOverState().equals(GameManager.GameOverState.Tie)) {
-                    this.addGameResult(
-                            new GameResult(
-                                    name2,
-                                    name1,
-                                    GameResult.Winner.tie));
+                    this.addGameResult(createResult(name2, name1, GameResult.Winner.tie, model));
                     ties.incrementAndGet();
                 }
                 else { // There is a winner
@@ -298,12 +285,7 @@ public class AppController implements Initializable {
                         winsBot1.incrementAndGet();
                         winResult = GameResult.Winner.player1;
                     }
-
-                    this.addGameResult(
-                            new GameResult(
-                                    name2,
-                                    name1,
-                                    winResult));
+                    this.addGameResult(createResult(name2, name1, winResult, model));
                 }
                 updateTitle();
 
@@ -312,6 +294,21 @@ public class AppController implements Initializable {
                 Platform.runLater(() -> statsModel.simulatingProperty().set(false));
             }
         }
+        private GameResult createResult(String p0, String p1, GameResult.Winner winner, BoardModel model) {
+            GameResult gr = new GameResult(p0, p1, winner);
+            String[][] board = model.getBoard();
+            String[][] boardCopy = new String[9][9];
+            for (int a = 0; a < 9; a++)
+                System.arraycopy(board[a], 0, boardCopy[a], 0, 9);
+            String[][] macro = model.getMacroboard();
+            String[][] macroCopy = new String[3][3];
+            for (int a = 0; a < 3; a++)
+                System.arraycopy(macro[a], 0, macroCopy[a], 0, 3);
+            gr.setBoard(boardCopy);
+            gr.setMacroboard(macroCopy);
+            return gr;
+        }
+
         private void updateActiveGame(ActiveGame ag, BoardModel model) {
             String[][] macro = model.getMacroboard();
             String[][] macroCopy = new String[3][3];

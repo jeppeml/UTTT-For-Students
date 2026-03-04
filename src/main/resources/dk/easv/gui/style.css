@@ -179,6 +179,14 @@
 
 /* ── Stats window ────────────────────────────────── */
 
+.split-pane{
+    -fx-background-color: rgb(230, 239, 255);
+}
+.split-pane > .split-pane-divider{
+    -fx-background-color: rgb(180, 190, 210);
+    -fx-padding: 2 0;
+}
+
 .stats-player-name{
     -fx-font-size: 22px;
     -fx-text-fill: white;
@@ -196,10 +204,6 @@
     -fx-text-fill: black;
     -fx-padding: 4;
     -fx-background-color: rgb(215, 225, 245);
-}
-
-.stat-items{
-    -fx-text-fill: lightgoldenrodyellow;
 }
 
 .active-games-scroll{
