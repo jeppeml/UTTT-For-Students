@@ -5,7 +5,10 @@ import dk.easv.bll.field.IField;
 import dk.easv.bll.move.IMove;
 import dk.easv.bll.move.Move;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * This is a proposed GameManager for Ultimate Tic-Tac-Toe,
@@ -169,23 +172,37 @@ public class GameManager {
     private IMove doTimedMove(IBot activeBot, IGameState state) {
         long timeLimit = state.getTimePerMove();
         boolean isNetwork = activeBot.isNetworkBot();
-        long effectiveTimeout = isNetwork ? NETWORK_BOT_TIMEOUT_MS : timeLimit;
+        // Wall-clock timeout: generous margin (3x) so bots aren't killed by CPU contention/GC.
+        // Actual enforcement uses CPU time measured below.
+        long wallClockTimeout = isNetwork ? NETWORK_BOT_TIMEOUT_MS : timeLimit * 3;
 
-        Future<IMove> future = moveExecutor.submit(() -> activeBot.doMove(state));
-        long startTime = System.currentTimeMillis();
+        ThreadMXBean tmxb = ManagementFactory.getThreadMXBean();
+        AtomicLong cpuStart = new AtomicLong();
+        AtomicLong cpuEnd = new AtomicLong();
+        AtomicLong botThreadId = new AtomicLong(-1);
+
+        Future<IMove> future = moveExecutor.submit(() -> {
+            long tid = Thread.currentThread().getId();
+            botThreadId.set(tid);
+            cpuStart.set(tmxb.getThreadCpuTime(tid));
+            IMove result = activeBot.doMove(state);
+            cpuEnd.set(tmxb.getThreadCpuTime(tid));
+            return result;
+        });
+
         IMove move;
         try {
-            move = future.get(effectiveTimeout, TimeUnit.MILLISECONDS);
+            move = future.get(wallClockTimeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
             if (isNetwork) {
                 System.err.println("[WARN] Network bot '" + activeBot.getBotName()
-                        + "' did not respond within " + effectiveTimeout + "ms (server unreachable?)");
+                        + "' did not respond within " + wallClockTimeout + "ms (server unreachable?)");
             } else {
                 System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
                         + "' exceeded time limit of " + timeLimit + "ms");
             }
-            forfeitReason = "exceeded time limit (" + effectiveTimeout + "ms)";
+            forfeitReason = "exceeded time limit (" + timeLimit + "ms)";
             return null;
         } catch (ExecutionException e) {
             System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
@@ -197,14 +214,16 @@ public class GameManager {
             forfeitReason = "interrupted";
             return null;
         }
-        long elapsed = System.currentTimeMillis() - startTime;
 
-        // Check for local bot exceeding time (future.get may return just before timeout)
-        if (!isNetwork && elapsed > timeLimit) {
-            System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
-                    + "' took " + elapsed + "ms (limit: " + timeLimit + "ms)");
-            forfeitReason = "took " + elapsed + "ms (limit: " + timeLimit + "ms)";
-            return null;
+        // Enforce using CPU time: fair regardless of CPU contention or GC pauses
+        if (!isNetwork && botThreadId.get() != -1) {
+            long cpuUsedMs = (cpuEnd.get() - cpuStart.get()) / 1_000_000;
+            if (cpuUsedMs > timeLimit) {
+                System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
+                        + "' used " + cpuUsedMs + "ms CPU time (limit: " + timeLimit + "ms)");
+                forfeitReason = "used " + cpuUsedMs + "ms CPU time (limit: " + timeLimit + "ms)";
+                return null;
+            }
         }
 
         if (move == null) {
