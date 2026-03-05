@@ -6,6 +6,7 @@ import dk.easv.bll.move.IMove;
 import dk.easv.bll.move.Move;
 
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * This is a proposed GameManager for Ultimate Tic-Tac-Toe,
@@ -169,23 +170,32 @@ public class GameManager {
     private IMove doTimedMove(IBot activeBot, IGameState state) {
         long timeLimit = state.getTimePerMove();
         boolean isNetwork = activeBot.isNetworkBot();
-        long effectiveTimeout = isNetwork ? NETWORK_BOT_TIMEOUT_MS : timeLimit;
+        // Wall-clock safety net: generous enough to absorb thread scheduling delay,
+        // but prevents stuck bots from blocking forever. Actual enforcement is inside
+        // the bot thread using elapsed time from when the bot starts executing.
+        long safetyTimeout = isNetwork ? NETWORK_BOT_TIMEOUT_MS : timeLimit * 2;
 
-        Future<IMove> future = moveExecutor.submit(() -> activeBot.doMove(state));
-        long startTime = System.currentTimeMillis();
+        AtomicLong botElapsed = new AtomicLong();
+        Future<IMove> future = moveExecutor.submit(() -> {
+            long start = System.currentTimeMillis();
+            IMove result = activeBot.doMove(state);
+            botElapsed.set(System.currentTimeMillis() - start);
+            return result;
+        });
+
         IMove move;
         try {
-            move = future.get(effectiveTimeout, TimeUnit.MILLISECONDS);
+            move = future.get(safetyTimeout, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
             if (isNetwork) {
                 System.err.println("[WARN] Network bot '" + activeBot.getBotName()
-                        + "' did not respond within " + effectiveTimeout + "ms (server unreachable?)");
+                        + "' did not respond within " + safetyTimeout + "ms (server unreachable?)");
             } else {
                 System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
                         + "' exceeded time limit of " + timeLimit + "ms");
             }
-            forfeitReason = "exceeded time limit (" + effectiveTimeout + "ms)";
+            forfeitReason = "exceeded time limit (" + timeLimit + "ms)";
             return null;
         } catch (ExecutionException e) {
             System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
@@ -197,13 +207,13 @@ public class GameManager {
             forfeitReason = "interrupted";
             return null;
         }
-        long elapsed = System.currentTimeMillis() - startTime;
 
-        // Check for local bot exceeding time (future.get may return just before timeout)
-        if (!isNetwork && elapsed > timeLimit) {
+        // Enforce time limit from when the bot actually started executing,
+        // not from when the task was submitted to the thread pool.
+        if (!isNetwork && botElapsed.get() > timeLimit) {
             System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
-                    + "' took " + elapsed + "ms (limit: " + timeLimit + "ms)");
-            forfeitReason = "took " + elapsed + "ms (limit: " + timeLimit + "ms)";
+                    + "' took " + botElapsed.get() + "ms (limit: " + timeLimit + "ms)");
+            forfeitReason = "took " + botElapsed.get() + "ms (limit: " + timeLimit + "ms)";
             return null;
         }
 
