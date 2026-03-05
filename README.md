@@ -1,13 +1,25 @@
 # UTTT-For-Students
 This is an implementation of the Ultimate Tic Tac Toe game. The game is written in Java using JavaFX and FontAwesomeFX by Jens Deters.
 
-![Screenshot of gameplay](/UTTT%20game%20screenshot.png)
-
 ## Getting it to work in IntelliJ
 1. Open the project as a Maven project. Dependencies (including JavaFX) are resolved automatically via `pom.xml`.
 2. Run `Launcher` (in `src/dk/easv/Launcher.java`) — click the green play arrow next to its `main` method.
 
 Any JDK 21+ works (no special JavaFX distribution needed).
+
+## The Game
+
+On the start screen you choose player types (human or AI) and select bots from the dropdown. The bot move delay slider controls how fast bot-vs-bot games play out.
+
+![Start screen](/start-screen.png)
+
+During gameplay, the board highlights playable sections in gold. Players place moves as diamonds (green, player 0) or trash cans (red, player 1). Won macro-board sections show a large icon for the winning player.
+
+![Gameplay mid-game](/gameplay.png)
+
+When a player wins, the result is shown as an overlay on the board.
+
+![Win screen](/win-screen.png)
 
 ## Game rules
 Here is a nice explanation of the rules of the game https://www.thegamegal.com/2018/09/01/ultimate-tic-tac-toe/
@@ -22,7 +34,9 @@ When the game starts it creates a list of the bot names in the project root fold
 The bots provided with the game are simple examples — see `src/dk/easv/bll/bot/README.md` for descriptions.
 
 ### REST Bot (TeacherBotRESTv2)
-A REST client bot that plays against a remote server hosting stronger MCTS bots. Requires a network connection to the bot server (EASV VPN for production, or local Proxmox IP for home testing). Change `SERVER_URL` in `TeacherBotRESTv2.java` to point to your server. Change `DEFAULT_SLUG` to select the bot strength:
+A REST client bot that plays against a remote server hosting stronger MCTS bots. The REST server is part of the UTTT challenge at SEA Business Academy and is not publicly available. If you'd like access to test your bot against the server, feel free to reach out.
+
+Change `SERVER_URL` in `TeacherBotRESTv2.java` to point to your server. Change `DEFAULT_SLUG` to select the bot strength:
 - `teacher` — Basic MCTS (strength 2.0)
 - `r16linrave` — MCTS + RAVE (strength 3.0)
 - `r19bitreuse` — Bitboard + tree reuse + RAVE (strength 3.5)
@@ -43,7 +57,11 @@ The stats window is split into two resizable sections:
 
 **Current Games** — live mini-board cards showing every active game. Each card displays the full 9x9 board with colored cells (green = player 0, red = player 1, blue = tie). Won macro-board sections turn solid. The current player's name shows a ▶ arrow. Cards appear when games start and disappear when they finish.
 
+![Stats window — current games and early results](/stats-current-games.png)
+
 **Finished Games** — two columns (one per player) with W/L/T stats and mini-board cards showing the final board state of each completed game.
+
+![Stats window — finished games](/stats-finished-games.png)
 
 Other features:
 - **Progress bar** — animated indeterminate bar while simulation is running

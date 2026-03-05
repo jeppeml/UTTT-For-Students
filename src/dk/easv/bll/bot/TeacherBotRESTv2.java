@@ -16,7 +16,7 @@ import java.util.UUID;
 
 /**
  * REST client that communicates with the UTTT bot server.
- * Requires a VPN connection to the EASV network.
+ * Requires a VPN connection to the SEA network.
  *
  * The server hosts multiple bots at different strength levels.
  * Change DEFAULT_SLUG to play against a different bot:
