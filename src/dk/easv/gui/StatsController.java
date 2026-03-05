@@ -110,8 +110,8 @@ public class StatsController implements Initializable {
 
     private void handleNewResult(GameResult result) {
         if (participantA == null) {
-            participantA = result.getPlayer0();
-            participantB = result.getPlayer1();
+            participantA = statsModel.player0NameProperty().get();
+            participantB = statsModel.player1NameProperty().get();
         }
 
         totalGames++;
