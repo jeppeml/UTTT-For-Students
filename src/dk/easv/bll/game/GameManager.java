@@ -36,6 +36,7 @@ public class GameManager {
     }
     
     private static final long NETWORK_BOT_TIMEOUT_MS = 30_000;
+    private static final long TIME_LEEWAY_MS = 25;
     private static final ExecutorService moveExecutor = Executors.newCachedThreadPool(r -> {
         Thread t = new Thread(r, "bot-move");
         t.setDaemon(true);
@@ -210,7 +211,7 @@ public class GameManager {
 
         // Enforce time limit from when the bot actually started executing,
         // not from when the task was submitted to the thread pool.
-        if (!isNetwork && botElapsed.get() > timeLimit) {
+        if (!isNetwork && botElapsed.get() > timeLimit + TIME_LEEWAY_MS) {
             System.err.println("[FORFEIT] Bot '" + activeBot.getBotName()
                     + "' took " + botElapsed.get() + "ms (limit: " + timeLimit + "ms)");
             forfeitReason = "took " + botElapsed.get() + "ms (limit: " + timeLimit + "ms)";
