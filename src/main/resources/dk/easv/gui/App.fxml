@@ -44,6 +44,7 @@
                <GridPane.margin>
                   <Insets />
                </GridPane.margin></Button>
+            <Button fx:id="btnSwapPlayers" onAction="#clickSwapPlayers" styleClass="action-button" text="&#x21C4;" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
             <RadioButton fx:id="radioLeftHuman" maxWidth="1.7976931348623157E308" onAction="#clickSelector" selected="true" styleClass="selectors" text="Human" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                <toggleGroup>
                   <ToggleGroup fx:id="toggleLeft" />

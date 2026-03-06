@@ -49,6 +49,8 @@ public class AppController implements Initializable {
     private ToggleGroup toggleRight;
 
     @FXML
+    private Button btnSwapPlayers;
+    @FXML
     private Button btnStart;
     @FXML
     private ComboBox<IBot> comboBotsRight;
@@ -167,6 +169,28 @@ public class AppController implements Initializable {
             t.setDaemon(true);
             t.start();
         }
+    }
+
+    @FXML
+    private void clickSwapPlayers(ActionEvent event) {
+        // Swap radio selections
+        boolean leftWasAI = radioLeftAI.isSelected();
+        boolean rightWasAI = radioRightAI.isSelected();
+        if (leftWasAI) radioRightAI.setSelected(true); else radioRightHuman.setSelected(true);
+        if (rightWasAI) radioLeftAI.setSelected(true); else radioLeftHuman.setSelected(true);
+
+        // Swap human names
+        String tmpName = txtHumanNameLeft.getText();
+        txtHumanNameLeft.setText(txtHumanNameRight.getText());
+        txtHumanNameRight.setText(tmpName);
+
+        // Swap bot selections
+        IBot tmpBot = comboBotsLeft.getValue();
+        comboBotsLeft.setValue(comboBotsRight.getValue());
+        comboBotsRight.setValue(tmpBot);
+
+        // Update simulation button state
+        clickSelector(event);
     }
 
     @FXML
